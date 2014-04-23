@@ -1,0 +1,12 @@
+" Detect various useful filetypes...
+
+augroup filetype
+  au! BufRead,BufNewFile *.rcp	  set filetype=rc
+  au! BufRead,BufNewFile *.rul	  set filetype=ishd
+  au! BufRead,BufNewFile *.trial  set filetype=nfast
+  au! BufRead,BufNewFile int_ver.txt set filetype=intver
+  au! BufRead,BufNewFile *.make.in set filetype=make
+  au! BufRead,BufNewFile manifest.in set filetype=manifest
+  au! BufRead,BufNewFile *.st	    set ft=spectcl
+
+augroup END
