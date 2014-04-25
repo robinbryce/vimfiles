@@ -38,9 +38,6 @@ noremap <F12> :set nonumber!<CR>:set foldcolumn=0<CR>
 " Run build command
 map <C-F8> :make<CR>
 
-" Execute file being edited with <Shift> + e:
-map <S-e> :w<CR>:!/usr/bin/env python % <CR>
-
 if version >= 600
 function! Fq(under, fpat, searchpat)
     "This function loads the results of a find and grep into the quickfix
