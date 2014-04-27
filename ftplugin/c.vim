@@ -47,23 +47,25 @@ endif
 "  Ctrl-F9   run executable
 " Shift-F9   command line arguments
 "
- map  <buffer>  <silent>  <A-F9>       :call C_Compile()<CR>:call C_HlMessage()<CR>
-imap  <buffer>  <silent>  <A-F9>  <C-C>:call C_Compile()<CR>:call C_HlMessage()<CR>
-"
- map  <buffer>  <silent>    <F9>       :call C_Link()<CR>:call C_HlMessage()<CR>
-imap  <buffer>  <silent>    <F9>  <C-C>:call C_Link()<CR>:call C_HlMessage()<CR>
-"
- map  <buffer>  <silent>  <C-F9>       :call C_Run()<CR>
-imap  <buffer>  <silent>  <C-F9>  <C-C>:call C_Run()<CR>
-"
- map  <buffer>  <silent>  <S-F9>       :call C_Arguments()<CR>
-imap  <buffer>  <silent>  <S-F9>  <C-C>:call C_Arguments()<CR>
-"
-" ---------- alternate file plugin (a.vim) ----------------------
-"
-if exists("loaded_alternateFile")
- map  <buffer>  <silent>  <S-F2>       :A<CR>
-imap  <buffer>  <silent>  <S-F2>  <C-C>:A<CR>
+if !exists("g:C_DisableMappings") || g:C_DisableMappings == 0
+     map  <buffer>  <silent>  <A-F9>       :call C_Compile()<CR>:call C_HlMessage()<CR>
+    imap  <buffer>  <silent>  <A-F9>  <C-C>:call C_Compile()<CR>:call C_HlMessage()<CR>
+    "
+     map  <buffer>  <silent>    <F9>       :call C_Link()<CR>:call C_HlMessage()<CR>
+    imap  <buffer>  <silent>    <F9>  <C-C>:call C_Link()<CR>:call C_HlMessage()<CR>
+    "
+     map  <buffer>  <silent>  <C-F9>       :call C_Run()<CR>
+    imap  <buffer>  <silent>  <C-F9>  <C-C>:call C_Run()<CR>
+    "
+     map  <buffer>  <silent>  <S-F9>       :call C_Arguments()<CR>
+    imap  <buffer>  <silent>  <S-F9>  <C-C>:call C_Arguments()<CR>
+    "
+    " ---------- alternate file plugin (a.vim) ----------------------
+    "
+    if exists("loaded_alternateFile")
+     map  <buffer>  <silent>  <S-F2>       :A<CR>
+    imap  <buffer>  <silent>  <S-F2>  <C-C>:A<CR>
+    endif
 endif
 "
 command! -nargs=1 -complete=customlist,C_CFileSectionList        CFileSection       call C_CFileSectionListInsert   (<f-args>)

@@ -1,5 +1,10 @@
 " <leader> shortcuts {{{1
 " quick edit & reload of this file.
+ 
+
+:nnoremap <leader>cc :call SetupForCompiler(g:My_DefaultCompiler)
+:nnoremap <leader>mm :make<cr>
+
 :nnoremap <leader>ev :vsplit $MYVIMRC<cr>
 :nnoremap <leader>eev :e $MYVIMRC<cr>
 :nnoremap <leader>sv :source $MYVIMRC<cr>
@@ -24,6 +29,7 @@ map <C-f>r :call FindUnder_SetRoot() <CR>
 "
 " Disable all the function key bindings from c.vim
 let g:C_DisableMappings=1
+let g:My_DefaultCompiler="mingw-gcc"
 " }}}1
 
 " tags {{{1
