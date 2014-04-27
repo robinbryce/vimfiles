@@ -1,3 +1,40 @@
+" <leader> shortcuts {{{1
+" quick edit & reload of this file.
+:nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+:nnoremap <leader>eev :e $MYVIMRC<cr>
+:nnoremap <leader>sv :source $MYVIMRC<cr>
+:nnoremap <leader>ss :source %<cr>
+
+":noremap <leader>evf :e $MYVIMRC:h
+:noremap <leader>edd :e d:/devel/<cr>
+" }}}1
+
+" Key Mappings {{{1
+" Toggle line numbers with F12, makes copying cleaner
+noremap <F12> :set nonumber!<CR>:set foldcolumn=0<CR>
+" Don't use Ex mode, use Q for formatting
+map Q gq
+map <C-f> :call FindUnder() <CR>
+map <C-f>p :call FindUnder_SetPattern() <CR>
+map <C-f>r :call FindUnder_SetRoot() <CR>
+
+"}}}1
+
+" globals that effect various plugins {{{1
+"
+" Disable all the function key bindings from c.vim
+let g:C_DisableMappings=1
+" }}}1
+
+" tags {{{1
+" With the following setting, Vim will search for the file named 'tags',
+" starting with the directory of the current file and then going to the parent
+" directory and then recursively to the directory one level above, till it
+" either locates the 'tags' file or reaches the root directory
+set tags=./tags;
+"}}}1
+"
+"Big behaviour {{{1
 " [1]http://dancingpenguinsoflight.com/2009/02/python-and-vim-make-your-own-ide/
 set viminfo='100,f1              " Save marks for 100 files, save global marks
 set nocompatible                " Use Vim defaults (much better!)
@@ -21,23 +58,44 @@ set number
 " turn on syntax highlighting
 syntax on
 set scrolloff=99999
-
-nmap ,s :source ~/.vimrc
-nmap ,v :e ~/.vimrc
-
 " Disable middle mouse paste - what a truly *stupid* default
 map <MiddleMouse> <Nop>
 imap <MiddleMouse> <Nop>
 
-" Don't use Ex mode, use Q for formatting
-map Q gq
+if version >= 600
+    "filetype on
+    filetype plugin on
+    "filetype plugin indent on
+    filetype indent on
+    colorscheme marklar
+endif
 
-" Toggle line numbers with F12, makes copying cleaner
-noremap <F12> :set nonumber!<CR>:set foldcolumn=0<CR>
+" Also switch on highlighting the last used search pattern.
+if has("syntax") && (&t_Co > 2 || has("gui_running"))
+  "syntax on
+  set hlsearch
+endif
 
-" Run build command
-map <C-F8> :make<CR>
+if has("gui_running")
+    if (! exists('gui_set'))
+        set lines=41
+        set columns=120
+        set guifont=Bitstream\ Vera\ Sans\ Mono\ 9
+        let g:gui_set=1
+    endif
+endif
 
+" Grep program. I think the Linux version is right by default.
+" Can I get this working for RISC OS?
+
+if has("win32")
+  set grepprg=search\ -n
+  set grepformat=%f:%l:%m
+endif
+
+"}}}1
+
+" Custom functions {{{1
 if version >= 600
 function! Fq(under, fpat, searchpat)
     "This function loads the results of a find and grep into the quickfix
@@ -94,43 +152,10 @@ function! FindUnder()
     "call Fq(under, patfpat[1], patfpat[0])
 
 endfunction
-
-map <C-f> :call FindUnder() <CR>
-map <C-f>p :call FindUnder_SetPattern() <CR>
-map <C-f>r :call FindUnder_SetRoot() <CR>
 endif
+" }}}1
 
-if version >= 600
-    "filetype on
-    filetype plugin on
-    "filetype plugin indent on
-    filetype indent on
-    colorscheme marklar
-endif
-
-" Also switch on highlighting the last used search pattern.
-if has("syntax") && (&t_Co > 2 || has("gui_running"))
-  "syntax on
-  set hlsearch
-endif
-
-if has("gui_running")
-    if (! exists('gui_set'))
-        set lines=41
-        set columns=120
-        set guifont=Bitstream\ Vera\ Sans\ Mono\ 9
-        let g:gui_set=1
-    endif
-endif
-
-" Grep program. I think the Linux version is right by default.
-" Can I get this working for RISC OS?
-
-if has("win32")
-  set grepprg=search\ -n
-  set grepformat=%f:%l:%m
-endif
-
+"Excplicit filetype stuff {{{1
 if version >= 500
 autocmd!
          "Remove ALL autocommands for the current group, so we can source
@@ -155,10 +180,4 @@ au FileType cpp set sw=2 ts=2 noet
 " Quickfix mode: command line msbuild error format
 au FileType cs set errorformat=\ %#%f(%l\\\,%c):\ error\ CS%n:\ %m
 endif
-
-" With the following setting, Vim will search for the file named 'tags',
-" starting with the directory of the current file and then going to the parent
-" directory and then recursively to the directory one level above, till it
-" either locates the 'tags' file or reaches the root directory
-set tags=./tags;
-
+"}}}1
