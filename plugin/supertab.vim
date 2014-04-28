@@ -89,14 +89,15 @@ set cpo&vim
   endif
 
   if !exists("g:SuperTabMappingForward")
-    let g:SuperTabMappingForward = '<tab>'
+  " let g:SuperTabMappingForward = '<tab>'
+    let g:SuperTabMappingForward = '<c-tab>'
   endif
   if !exists("g:SuperTabMappingBackward")
     let g:SuperTabMappingBackward = '<s-tab>'
   endif
 
   if !exists("g:SuperTabMappingTabLiteral")
-    let g:SuperTabMappingTabLiteral = '<c-tab>'
+  "KEEP TAB  let g:SuperTabMappingTabLiteral = '<c-tab>'
   endif
 
   if !exists("g:SuperTabLongestHighlight")
@@ -480,7 +481,7 @@ endfunction " }}}
 
 " Key Mappings {{{
   " map a regular tab to ctrl-tab (note: doesn't work in console vim)
-  exec 'inoremap ' . g:SuperTabMappingTabLiteral . ' <tab>'
+  "KEEP TAB: exec 'inoremap ' . g:SuperTabMappingTabLiteral . ' <tab>'
 
   imap <c-x> <c-r>=<SID>ManualCompletionEnter()<cr>
 

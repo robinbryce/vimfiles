@@ -25,7 +25,7 @@
 "
 
 if !has("python")
-    finish "no python support
+"    finish "no python support
 endif
 
 " load this plugin once per buffer
@@ -76,7 +76,26 @@ function! SetupLocalMakePrg()
     python set_wafroot()
     setlocal makeprg=python\ waf
 endfunction
-"command! SetupLocalMakePrg SetupLocalMakePrg()
+
+let g:compcfgs = {
+            \"mingw-gcc": {"compiler":"mingw-gcc", "configure":"gcc"}
+            \, "msvc": {"compiler":"msvc"}
+            \}
+
+function! SetupForCompiler(comp)
+    let cwd = getcwd()
+    exec "cd " . b:wafroot
+    let cfg=g:compcfgs[a:comp]
+    make distclean
+    if has_key(cfg, "configure")
+        exec "make configure --check-c-compiler=" . cfg["configure"]
+    else
+        make configure
+    endif
+    echom cfg["compiler"]
+    exec "compiler! " . cfg["compiler"]
+    exec "cd " . cwd
+endfunction
 
 au BufReadPost,BufNewFile \f\+.\([ch]\>\|[ch]pp\|hxx\|py\)\|wscript call SetupLocalMakePrg()
 
