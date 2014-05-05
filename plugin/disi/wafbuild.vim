@@ -35,6 +35,11 @@ else
     let b:did_wafbuild_plugin = 1
 endif
 
+
+if version < 700
+  finish
+fi
+
 python << endpython
 import vim
 from os.path import isfile, isdir, join, dirname

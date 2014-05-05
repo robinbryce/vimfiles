@@ -1,8 +1,9 @@
 " <leader> shortcuts {{{1
 " quick edit & reload of this file.
- 
 
-:nnoremap <leader>cc :call SetupForCompiler(g:My_DefaultCompiler)
+:nnoremap <leader>tp :set sw=4 ts=4 et<cr>
+:nnoremap <leader>bb :buffers<cr>
+:nnoremap <leader>ms :call SetupForCompiler(g:My_DefaultCompiler)
 :nnoremap <leader>mm :make<cr>
 
 :nnoremap <leader>ev :vsplit $MYVIMRC<cr>
@@ -61,15 +62,17 @@ set splitbelow                  " edit new files in buffer below current one
 
 " turn on line numbers
 set number
+
 " turn on syntax highlighting
 syntax on
+
 set scrolloff=99999
 " Disable middle mouse paste - what a truly *stupid* default
 map <MiddleMouse> <Nop>
 imap <MiddleMouse> <Nop>
 
 if version >= 600
-    "filetype on
+    filetype on
     filetype plugin on
     "filetype plugin indent on
     filetype indent on
@@ -163,12 +166,11 @@ endif
 
 "Excplicit filetype stuff {{{1
 if version >= 500
-autocmd!
-         "Remove ALL autocommands for the current group, so we can source
-         ".vimrc multiple times.
 
 "effectively, disable autocmds for vi when its accessed via symlink to vim
 
+augroup csharp_syntax
+au!
 " c# folding
 au FileType cs set omnifunc=syntaxcomplete#Complete
 au FileType cs set foldmethod=marker
@@ -185,5 +187,8 @@ au FileType cpp set sw=2 ts=2 noet
 
 " Quickfix mode: command line msbuild error format
 au FileType cs set errorformat=\ %#%f(%l\\\,%c):\ error\ CS%n:\ %m
+
+augroup END
 endif
 "}}}1
+
