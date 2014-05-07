@@ -38,7 +38,7 @@ endif
 
 if version < 700
   finish
-fi
+endif
 
 python << endpython
 import vim
@@ -67,39 +67,43 @@ def set_wafroot():
         clear_wafroot()
         return
     bufdir = dirname(vim.current.buffer.name)
-    #vim.command('echom "wafbuild: startdir: ' + bufdir.encode('string-escape') + '"')
     wscriptdir = find_furthest('wscript', startdir=bufdir)
     if wscriptdir is not None:
-        #vim.command('echom "wafbuild: set wafroot to: ' + str(wscriptdir).encode('string-escape') + '"')
         vim.command('let b:wafroot="' + str(wscriptdir).encode('string-escape') + '"')
-        #vim.command('let b:wafroot="' + str(wscriptdir) + '"')
     else:
         clear_wafroot()
 endpython
 
 function! SetupLocalMakePrg()
     python set_wafroot()
-    setlocal makeprg=python\ waf
+    "setlocal makeprg="python waf build-" . b:configured_comp
+    if !exists("b:configured_comp")
+        call SetupForCompiler(g:My_DefaultCompiler)
+    endif
+    exec "setlocal makeprg=python\\ waf\\ build-" . b:configured_comp
 endfunction
 
 let g:compcfgs = {
-            \"mingw-gcc": {"compiler":"mingw-gcc", "configure":"gcc"}
-            \, "msvc": {"compiler":"msvc"}
+            \"gcc": {"compiler":"mingw-gcc"},
+            \"msvc": {"compiler":"msvc"}
             \}
 
 function! SetupForCompiler(comp)
+    setlocal makeprg=python\ waf
     let cwd = getcwd()
     exec "cd " . b:wafroot
     let cfg=g:compcfgs[a:comp]
     make distclean
     if has_key(cfg, "configure")
-        exec "make configure --check-c-compiler=" . cfg["configure"]
+        exec "make configure " . cfg["configure"]
     else
         make configure
     endif
     echom cfg["compiler"]
     exec "compiler! " . cfg["compiler"]
+    let b:configured_comp=a:comp
     exec "cd " . cwd
+    exec "setlocal makeprg=python\\ waf\\ build-" . b:configured_comp
 endfunction
 
 au BufReadPost,BufNewFile \f\+.\([ch]\>\|[ch]pp\|hxx\|py\)\|wscript call SetupLocalMakePrg()

@@ -30,7 +30,7 @@ map <C-f>r :call FindUnder_SetRoot() <CR>
 "
 " Disable all the function key bindings from c.vim
 let g:C_DisableMappings=1
-let g:My_DefaultCompiler="mingw-gcc"
+let g:My_DefaultCompiler="gcc"
 " }}}1
 
 " tags {{{1
