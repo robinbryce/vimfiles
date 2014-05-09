@@ -79,8 +79,10 @@ function! SetupLocalMakePrg()
     "setlocal makeprg="python waf build-" . b:configured_comp
     if !exists("b:configured_comp")
         call SetupForCompiler(g:My_DefaultCompiler)
+        exec "setlocal makeprg=python\\ waf\\ build-" . g:My_DefaultCompiler
+    else
+        exec "setlocal makeprg=python\\ waf\\ build-" . b:configured_comp
     endif
-    exec "setlocal makeprg=python\\ waf\\ build-" . b:configured_comp
 endfunction
 
 let g:compcfgs = {
