@@ -64,7 +64,9 @@ def set_wafroot():
     """
 
     if not vim.current.buffer.name:
-        clear_wafroot()
+        # clearing the root here has the effect of reseting the compiler
+        # evertime we jump from quickfix to source.
+        # clear_wafroot()
         return
     bufdir = dirname(vim.current.buffer.name)
     wscriptdir = find_furthest('wscript', startdir=bufdir)
@@ -75,7 +77,12 @@ def set_wafroot():
 endpython
 
 function! SetupLocalMakePrg()
+
     python set_wafroot()
+
+    "if has_key(g:wafroot2makeprg, b:wafroot)
+    "    exec g:wafroot2makeprg[b:wafroot]
+    "else
     "setlocal makeprg="python waf build-" . b:configured_comp
     if !exists("b:configured_comp")
         call SetupForCompiler(g:My_DefaultCompiler)
@@ -89,6 +96,7 @@ let g:compcfgs = {
             \"gcc": {"compiler":"mingw-gcc"},
             \"msvc": {"compiler":"msvc"}
             \}
+
 
 function! SetupForCompiler(comp)
     setlocal makeprg=python\ waf
