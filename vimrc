@@ -10,6 +10,9 @@
 
 :nnoremap <leader>tp :set sw=4 ts=4 et<cr>
 :nnoremap <leader>bb :buffers<cr>
+:nnoremap <leader>bo :MBEOpen<cr>
+:nnoremap <leader>bc :MBEClose<cr>
+
 ":nnoremap <leader>ms :call SetupForCompiler(g:My_DefaultCompiler)
 ":nnoremap <leader>mm :make<cr>
 ":nnoremap <leader>mt :!ctags -R --languages="python" $(pwd)<cr>
@@ -27,16 +30,24 @@
 " TAG NAVIGATION
 
 """"
+noremap <C-F8> :TagbarToggle<cr>
+
+noremap <F10> :split<cr>:RopeGotoDefinition<cr>
+noremap <F11> :RopeFindOccurrences<cr>
+
+noremap <F2> :RopeShowDoc<cr>
+
+""""
 "Open (listed)tag in new window
 noremap <C-F12> "zyiw:stselect <C-R>z<cr>
 " because sometimes F12 is accessed via a function key
-noremap <C-F10> "zyiw:stselect <C-R>z<cr>
+"noremap <C-F10> "zyiw:stselect <C-R>z<cr>
 
 """"
 "Open (listed)tag in current window
 noremap <F12> "zyiw:tselect <C-R>z<cr>
 " because sometimes F12 is accessed via a function key
-noremap <F10> "zyiw:tselect <C-R>z<cr>
+"noremap <F10> "zyiw:tselect <C-R>z<cr>
 
 
 " SEARCH
@@ -147,6 +158,11 @@ endif
 if version >= 500
 
 "effectively, disable autocmds for vi when its accessed via symlink to vim
+
+augroup python_syntax
+au!
+au FileType python set omnifunc=RopeCompleteFunc
+augroup END
 
 augroup csharp_syntax
 au!
