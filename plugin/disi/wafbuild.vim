@@ -116,7 +116,7 @@ function! SetupForCompiler(comp)
     exec "setlocal makeprg=python\\ waf\\ build-" . b:configured_comp
 endfunction
 
-au BufReadPost,BufNewFile \f\+.\([ch]\>\|[ch]pp\|hxx\|py\)\|wscript call SetupLocalMakePrg()
+"au BufReadPost,BufNewFile \f\+.\([ch]\>\|[ch]pp\|hxx\)\|wscript call SetupLocalMakePrg()
 
-au QuickFixCmdPre make exec "cd " . b:wafroot
-au QuickFixCmdPost make exec "cd -"
+"au QuickFixCmdPre make exec "cd " . b:wafroot
+"au QuickFixCmdPost make exec "cd -"

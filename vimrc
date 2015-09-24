@@ -1,28 +1,53 @@
 " <leader> shortcuts {{{1
 " quick edit & reload of this file.
 
+"PYLINT as MAKE
+":set makeprg=/opt/appliance/container/common/mypy/bin/pylint\ --pylint=/opt/appliance/baseimage/sourcechecks/pylint.conf\ --reports=n\ --msg-template=\"{path}:{line}:\ {msg_id}\ {symbol},\ {obj}\ {msg}\"\ %:p
+
+"Must precede filetype detection
+:call pathogen#infect()
+:call pathogen#helptags()
+
 :nnoremap <leader>tp :set sw=4 ts=4 et<cr>
 :nnoremap <leader>bb :buffers<cr>
-:nnoremap <leader>ms :call SetupForCompiler(g:My_DefaultCompiler)
-:nnoremap <leader>mm :make<cr>
+":nnoremap <leader>ms :call SetupForCompiler(g:My_DefaultCompiler)
+":nnoremap <leader>mm :make<cr>
+":nnoremap <leader>mt :!ctags -R --languages="python" $(pwd)<cr>
 
 :nnoremap <leader>ev :vsplit $MYVIMRC<cr>
-:nnoremap <leader>eev :e $MYVIMRC<cr>
-:nnoremap <leader>sv :source $MYVIMRC<cr>
-:nnoremap <leader>ss :source %<cr>
+":nnoremap <leader>sv :source $MYVIMRC<cr>
+":nnoremap <leader>ss :source %<cr>
 
 ":noremap <leader>evf :e $MYVIMRC:h
-:noremap <leader>edd :e d:/devel/<cr>
+:noremap <leader>pr :cd /opt/appliance/container<cr>
 " }}}1
 
 " Key Mappings {{{1
-" Toggle line numbers with F12, makes copying cleaner
-noremap <F12> :set nonumber!<CR>:set foldcolumn=0<CR>
+"
+" TAG NAVIGATION
+
+""""
+"Open (listed)tag in new window
+noremap <C-F12> "zyiw:stselect <C-R>z<cr>
+" because sometimes F12 is accessed via a function key
+noremap <C-F10> "zyiw:stselect <C-R>z<cr>
+
+""""
+"Open (listed)tag in current window
+noremap <F12> "zyiw:tselect <C-R>z<cr>
+" because sometimes F12 is accessed via a function key
+noremap <F10> "zyiw:tselect <C-R>z<cr>
+
+
+" SEARCH
+"
+noremap <F9> "zyiw:vimgrep <C-R>z **/*.py
+
+" Toggle line numbers with <leader>nn, makes copying cleaner
+noremap <leader>nn :set nonumber!<CR>:set foldcolumn=0<CR>
 " Don't use Ex mode, use Q for formatting
+" ??? noremap <F12> :set nonumber!<CR>:set foldcolumn=0<CR>
 map Q gq
-map <C-f> :call FindUnder() <CR>
-map <C-f>p :call FindUnder_SetPattern() <CR>
-map <C-f>r :call FindUnder_SetRoot() <CR>
 
 "}}}1
 
@@ -30,7 +55,10 @@ map <C-f>r :call FindUnder_SetRoot() <CR>
 "
 " Disable all the function key bindings from c.vim
 let g:C_DisableMappings=1
-let g:My_DefaultCompiler="gcc"
+let g:My_DefaultCompiler="mingw-gcc"
+
+" because it zaps the contents of the quick fix window when I jump to a file.
+let g:pyflakes_use_quickfix = 0
 " }}}1
 
 " tags {{{1
@@ -55,7 +83,18 @@ set nowrap
 
 set sw=4 ts=4 smarttab et
 set textwidth=79
+if version >= 730
+    set colorcolumn=80
+endif
+set statusline +=col:\ %c
 set list listchars=tab:`\ ,trail:-
+
+set wrap
+
+" I prefer seeing tabs to controling where wrap breaks lines.
+"set linebreak
+"set nolist "list disables linebreak
+
 
 set backspace=2
 set splitbelow                  " edit new files in buffer below current one
@@ -104,66 +143,6 @@ endif
 
 "}}}1
 
-" Custom functions {{{1
-if version >= 600
-function! Fq(under, fpat, searchpat)
-    "This function loads the results of a find and grep into the quickfix
-    "buffer, enabling convenient jumping through the search results.
-    "NOTICE: fpat is space separated, but you only get results for the first
-    "pattern which getts hits, ie "*.h *.c" gives results for *.c only if no
-    "matches in any *.h
-
-    let findcall='find ' . a:under . ' '
-    let patterns=split(a:fpat)
-    if len(patterns) > 1
-        for pat in patterns[:-2]
-            let findcall = findcall . '-name "' . pat . '" -o '
-        endfor
-        "let findcall = findcall . '-name "' . patterns[-1] . '"'
-    endif
-    let findcall = findcall . '-name "' . patterns[-1] . '"' . ' -exec grep -n "' . a:searchpat . '" {} +'
-    cexpr system(findcall) | copen
-endfunction
-
-function! Fqpy(under, search)
-    call Fq(a:under, "*.py", a:search")
-endfunction
-
-let g:findroot=getcwd()
-let g:findpat="*.*"
-
-function! FindUnder_SetRoot()
-    call inputsave()
-    let g:findroot = input('findroot:', g:findroot)
-    call inputrestore()
-endfunction
-function! FindUnder_SetPattern()
-    call inputsave()
-    let g:findpat = input('findpat:', g:findpat)
-    call inputrestore()
-endfunction
-
-function! FindUnder()
-    call inputsave()
-    let what=input('what:')
-    call inputrestore()
-    call Fq(g:findroot, g:findpat, what)
-
-    "let whatin=input('what in [where]:')
-    "let patfpat=split(whatin)
-    "permit the root to be specified as 3rd optional element
-    "let fpat = input('filepat:')
-    "call inputrestore()
-    "let under=g:findroot
-    "if len(patfpat) > 2
-    "    let under=patfpat[2]
-    "endif
-    "call Fq(under, patfpat[1], patfpat[0])
-
-endfunction
-endif
-" }}}1
-
 "Excplicit filetype stuff {{{1
 if version >= 500
 
@@ -179,7 +158,9 @@ au FileType cs set foldtext=substitute(getline(v:foldstart),'{.*','{...}',)
 au FileType cs set foldlevelstart=2
 au FileType cs set sw=2 ts=2 noet
 " Formatting, and display of improper indentation etc.,
-au FileType python set complete+=k~/.vim/syntax/python.vim isk+=.,(
+" WARNING: isk+=. causes word boundary to include Class.name and instance.name,
+" ie '.' is no longer a word boundary. This breaks tag jumping <C-]>
+"au FileType python set complete+=k~/.vim/syntax/python.vim isk+=.,(
 
 " cpp folding
 au FileType cpp set foldmethod=syntax

@@ -1,0 +1,13 @@
+[submodule "bundle/fugitive"]
+	path = bundle/fugitive
+	url = http://github.com/tpope/vim-fugitive.git
+[submodule "bundle/ropevim"]
+	path = bundle/ropevim
+	url = https://github.com/python-rope/ropevim.git
+[submodule "tagbar"]
+	path = tagbar
+	url = https://github.com/majutsushi/tagbar.git
+[submodule "vim-plugin-minibufexpl"]
+	path = vim-plugin-minibufexpl
+	url = https://github.com/weynhamz/vim-plugin-minibufexpl.git
+	branch = develop
