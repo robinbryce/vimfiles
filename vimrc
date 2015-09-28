@@ -1,14 +1,36 @@
+"DEFAULT PROJECT setup
+cd /opt/appliance/container
+
 " <leader> shortcuts {{{1
 " quick edit & reload of this file.
 
-"PYLINT as MAKE
-":set makeprg=/opt/appliance/container/common/mypy/bin/pylint\ --pylint=/opt/appliance/baseimage/sourcechecks/pylint.conf\ --reports=n\ --msg-template=\"{path}:{line}:\ {msg_id}\ {symbol},\ {obj}\ {msg}\"\ %:p
+"SYNTASTIC
+"
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+"Only populate location list when :Errors is run
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 2
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+
+let g:syntastic_python_python_exec = '~/pyenvs/py33/bin/python33'
+let g:syntastic_python_pylint_args = '--rcfile=/opt/appliance/baseimage/sourcechecks/pylint.conf'
+let g:syntastic_python_checkers = ['pylint']
+
+" Do checking on demand, rather than on file open / buffer save
+ let g:syntastic_mode_map = {
+    \ "mode": "active"
+    \ }
+"Note: The mode (above) can be set per file type.
 
 "Must precede filetype detection
 :call pathogen#infect()
 :call pathogen#helptags()
 
-:nnoremap <leader>tp :set sw=4 ts=4 et<cr>
+:nnoremap <leader>tpy :set sw=4 ts=4 et<cr>
 :nnoremap <leader>bb :buffers<cr>
 :nnoremap <leader>bo :MBEOpen<cr>
 :nnoremap <leader>bc :MBEClose<cr>
@@ -30,9 +52,13 @@
 " TAG NAVIGATION
 
 """"
+noremap <C-o> :RopeOpenProject<cr>
+noremap <F7> :SyntasticCheck<cr>:Errors<cr>
+noremap <C-F7> :lclose<cr>
 noremap <C-F8> :TagbarToggle<cr>
 
 noremap <F10> :split<cr>:RopeGotoDefinition<cr>
+noremap <C-F10> :RopeGotoDefinition<cr>
 noremap <F11> :RopeFindOccurrences<cr>
 
 noremap <F2> :RopeShowDoc<cr>
