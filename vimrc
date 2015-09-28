@@ -52,16 +52,17 @@ let g:syntastic_python_checkers = ['pylint']
 " TAG NAVIGATION
 
 """"
-noremap <C-o> :RopeOpenProject<cr>
+"noremap <C-o> :RopeOpenProject<cr>
 noremap <F7> :SyntasticCheck<cr>:Errors<cr>
 noremap <C-F7> :lclose<cr>
 noremap <C-F8> :TagbarToggle<cr>
 
-noremap <F10> :split<cr>:RopeGotoDefinition<cr>
-noremap <C-F10> :RopeGotoDefinition<cr>
-noremap <F11> :RopeFindOccurrences<cr>
+"noremap <F10> :split<cr>:RopeGotoDefinition<cr>
+noremap <F10> :call jedi#goto()<cr>
+noremap <C-F10> :split<cr> :call jedi#goto()<cr>
+noremap <F11> :call jedi#usages()<cr>
 
-noremap <F2> :RopeShowDoc<cr>
+noremap <F2> :call jedi#show_documentation()<cr>
 
 """"
 "Open (listed)tag in new window
@@ -185,10 +186,10 @@ if version >= 500
 
 "effectively, disable autocmds for vi when its accessed via symlink to vim
 
-augroup python_syntax
-au!
-au FileType python set omnifunc=RopeCompleteFunc
-augroup END
+"augroup python_syntax
+"au!
+"au FileType python set omnifunc=RopeCompleteFunc
+"augroup END
 
 augroup csharp_syntax
 au!
