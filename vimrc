@@ -1,6 +1,19 @@
 "DEFAULT PROJECT setup
 cd /opt/appliance/container
 
+let g:jedi#force_py_version = 3
+"YouCompleteMe
+let g:ycm_server_log_level = 'debug'
+let g:ycm_server_keep_logfiles = 1
+let g:ycm_collect_identifiers_from_tags_files = 1
+"let g:ycm_path_to_python_interpreter = '/home/appliance/pyenvs/py33/bin/python3'
+
+" PATHOGEN (plugin management)
+"Must precede filetype detection
+:call pathogen#infect()
+:call pathogen#helptags()
+
+
 " <leader> shortcuts {{{1
 " quick edit & reload of this file.
 
@@ -8,6 +21,7 @@ cd /opt/appliance/container
 "
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%{virtualenv#statusline()}
 set statusline+=%*
 
 "Only populate location list when :Errors is run
@@ -26,9 +40,6 @@ let g:syntastic_python_checkers = ['pylint']
     \ }
 "Note: The mode (above) can be set per file type.
 
-"Must precede filetype detection
-:call pathogen#infect()
-:call pathogen#helptags()
 
 :nnoremap <leader>tpy :set sw=4 ts=4 et<cr>
 :nnoremap <leader>bb :buffers<cr>
@@ -39,7 +50,7 @@ let g:syntastic_python_checkers = ['pylint']
 ":nnoremap <leader>mm :make<cr>
 ":nnoremap <leader>mt :!ctags -R --languages="python" $(pwd)<cr>
 
-:nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+:nnoremap <leader>sv :vsplit $MYVIMRC<cr>
 ":nnoremap <leader>sv :source $MYVIMRC<cr>
 ":nnoremap <leader>ss :source %<cr>
 
@@ -49,20 +60,31 @@ let g:syntastic_python_checkers = ['pylint']
 
 " Key Mappings {{{1
 "
-" TAG NAVIGATION
+noremap <leader>er<cr> :e ~/vimfiles/vimrc
+noremap <leader>svr<cr> :source ~/vimfiles/vimrc
+
+" TRANSFORMATIONS
+nnoremap <leader>W :%s/\s\+$//<cr>:let @/=''<cr>
+
+" TAG, NAVIGATION & Static Analisys
 
 """"
 "noremap <C-o> :RopeOpenProject<cr>
 noremap <F7> :SyntasticCheck<cr>:Errors<cr>
+noremap <leader>dycm :YcmDebugInfo<cr>
+noremap <C-F7> :YcmDiags<cr>
 noremap <C-F7> :lclose<cr>
 noremap <C-F8> :TagbarToggle<cr>
 
 "noremap <F10> :split<cr>:RopeGotoDefinition<cr>
-noremap <F10> :call jedi#goto()<cr>
-noremap <C-F10> :split<cr> :call jedi#goto()<cr>
-noremap <F11> :call jedi#usages()<cr>
+"noremap <F10> :call jedi#goto()<cr>
+noremap <F10> :YcmCompleter GoTo<cr>
+noremap <C-F10> :split<cr> :YcmCompleter GoTo<cr>
+noremap <leader>decl :YcmCompleter GoToDeclaration<cr>
 
-noremap <F2> :call jedi#show_documentation()<cr>
+noremap <leader>ffi :YcmCompleter FixIt<cr>
+"noremap <F11> :call jedi#usages()<cr>
+"noremap <F2> :call jedi#show_documentation()<cr>
 
 """"
 "Open (listed)tag in new window
@@ -109,7 +131,17 @@ set tags=./tags;
 "
 "Big behaviour {{{1
 " [1]http://dancingpenguinsoflight.com/2009/02/python-and-vim-make-your-own-ide/
-set viminfo='100,f1              " Save marks for 100 files, save global marks
+
+
+nnoremap / /\v
+vnoremap / /\v
+
+set formatoptions=tcjnq
+set gdefault                    " global replace s/x/y/g by default.
+set ignorecase                  " coupled with smartcase, this means insensitive
+set smartcase                   " unless search string is mixed case.
+set modelines=0                 " Prevents some exploits.
+set viminfo='100,f1             " Save marks for 100 files, save global marks
 set nocompatible                " Use Vim defaults (much better!)
 set shortmess=AI
 set noequalalways               " don't make all windows same size after split
@@ -120,6 +152,7 @@ set nowrap
                                 " See <http://vim.wikia.com/wiki/VimTip64>
 
 set sw=4 ts=4 smarttab et
+set wrap
 set textwidth=79
 if version >= 730
     set colorcolumn=80
@@ -127,7 +160,6 @@ endif
 set statusline +=col:\ %c
 set list listchars=tab:`\ ,trail:-
 
-set wrap
 
 " I prefer seeing tabs to controling where wrap breaks lines.
 "set linebreak
@@ -195,10 +227,10 @@ augroup csharp_syntax
 au!
 " c# folding
 au FileType cs set omnifunc=syntaxcomplete#Complete
-au FileType cs set foldmethod=marker
-au FileType cs set foldmarker={,}
-au FileType cs set foldtext=substitute(getline(v:foldstart),'{.*','{...}',)
-au FileType cs set foldlevelstart=2
+"au FileType cs set foldmethod=marker
+"au FileType cs set foldmarker={,}
+"au FileType cs set foldtext=substitute(getline(v:foldstart),'{.*','{...}',)
+"au FileType cs set foldlevelstart=2
 au FileType cs set sw=2 ts=2 noet
 " Formatting, and display of improper indentation etc.,
 " WARNING: isk+=. causes word boundary to include Class.name and instance.name,

@@ -1,0 +1,8 @@
+* put jumps in tag stack so <C-t> works. <C-^> only works for depth 1
+  - try CTRL-O/I
+* get completion balloons working consistently
+* understand how jedi populates it's index. Rope uses a 'project', jedi appears
+  to rely on having visited a file
+* 'buf appear', due to buf del, doesn't apply syntax highlighting
+* linebreak prefs - never split keyword paramaters from their values
+* have a look at this: https://facebook.github.io/watchman/
