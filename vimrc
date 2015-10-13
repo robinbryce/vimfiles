@@ -1,7 +1,7 @@
 "DEFAULT PROJECT setup
 cd /opt/appliance/container
 
-let g:jedi#force_py_version = 3
+"let g:jedi#force_py_version = 3
 "YouCompleteMe
 let g:ycm_server_log_level = 'debug'
 let g:ycm_server_keep_logfiles = 1
@@ -36,7 +36,7 @@ let g:syntastic_python_checkers = ['pylint']
 
 " Do checking on demand, rather than on file open / buffer save
  let g:syntastic_mode_map = {
-    \ "mode": "active"
+    \ "mode": "passive"
     \ }
 "Note: The mode (above) can be set per file type.
 
