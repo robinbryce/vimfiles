@@ -1,5 +1,7 @@
 "DEFAULT PROJECT setup
-cd /opt/appliance/container
+if !empty(glob("/opt/appliance/container"))
+    cd /opt/appliance/container
+endif
 
 "let g:jedi#force_py_version = 3
 "YouCompleteMe
@@ -40,7 +42,8 @@ let g:syntastic_python_checkers = ['pylint']
     \ }
 "Note: The mode (above) can be set per file type.
 
-
+:nnoremap <leader>eh :e %:h/
+:nnoremap <leader>vh :vsplit %:h/
 :nnoremap <leader>tpy :set sw=4 ts=4 et<cr>
 :nnoremap <leader>bb :buffers<cr>
 :nnoremap <leader>bo :MBEOpen<cr>
@@ -70,7 +73,7 @@ nnoremap <leader>W :%s/\s\+$//<cr>:let @/=''<cr>
 
 """"
 "noremap <C-o> :RopeOpenProject<cr>
-noremap <F7> :SyntasticCheck<cr>:Errors<cr>
+noremap <F8> :SyntasticCheck<cr>:Errors<cr>
 noremap <leader>dycm :YcmDebugInfo<cr>
 noremap <C-F7> :YcmDiags<cr>
 noremap <C-F7> :lclose<cr>
@@ -158,6 +161,7 @@ if version >= 730
     set colorcolumn=80
 endif
 set statusline +=col:\ %c
+"set statusline +=c:\ %c
 set list listchars=tab:`\ ,trail:-
 
 
