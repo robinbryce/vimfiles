@@ -1,3 +1,0 @@
-* force "very magic" for regexs by prefixing searches with \v
-  this gives, essentialy, python/perl regex's
-* F10, F12 and C-10 C-f12 mapped for tag navigation
