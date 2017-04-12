@@ -19,7 +19,17 @@ endif
 "
 "source ~/vimfiles/bundle/plugin/minibufexpl.vim
 
+" GUI OPTIONS
+set guioptions-=T "remove gui tool bar.
+
+" STATUS LINE - vim-airline
+let g:airline#extentions#tabline#enabled = 1
 "set statusline+=...[%{&fo}]...
+
+" GIT
+
+noremap <leader>g :GitGutterLineHighlightsToggle<cr>
+
 "SYNTASTIC
 "
 set statusline+=%#warningmsg#
@@ -33,12 +43,13 @@ let g:syntastic_auto_loc_list = 2
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 
-let g:syntastic_python_python_exec = 'python3'
-let g:syntastic_python_pylint_exec = 'pylint'
+"let g:syntastic_python_python_exec = 'python3'
+let g:syntastic_python_python_exec = '~/pyenvs/web2py/bin/python2.7'
+let g:syntastic_python_pylint_exec = '~/pyenvs/web2py/bin/pylint'
 
 " Note: python path can be manipulated in pylintrc
 
-let g:syntastic_python_pylint_args = '--rcfile=/home/appdev/.config/pylintrc'
+let g:syntastic_python_pylint_args = '--rcfile=/home/vagrant/.config/pylintrc'
 let g:syntastic_python_checkers = ['pylint']
 
 
