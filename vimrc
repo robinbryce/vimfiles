@@ -49,7 +49,7 @@ let g:syntastic_python_pylint_exec = '~/pyenvs/web2py/bin/pylint'
 
 " Note: python path can be manipulated in pylintrc
 
-let g:syntastic_python_pylint_args = '--rcfile=/home/vagrant/.config/pylintrc'
+let g:syntastic_python_pylint_args = '--rcfile=/srv/host/projects/web2py/applications/icss/pylintrc'
 let g:syntastic_python_checkers = ['pylint']
 
 
@@ -60,7 +60,7 @@ noremap <leader>fn :echo expand("%:p")<cr>
 noremap <F7> :SyntasticCheck<cr>:Errors<cr>
 noremap <C-F7> :lclose<cr>
 noremap <leader>dycm :YcmDebugInfo<cr>
-"noremap <F11> :TagbarToggle<cr>
+noremap <F8> :TagbarToggle<cr>
 
 noremap <F10> :YcmCompleter GoTo<cr>:echo expand('%:p')<cr>
 noremap <leader><F10> :YcmCompleter GoToReferences<cr>
