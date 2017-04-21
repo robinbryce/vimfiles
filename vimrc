@@ -1,3 +1,30 @@
+" TAG, NAVIGATION & Static Analisys
+
+""""
+
+noremap <F3> "zyiw:vimgrep <C-R>z **/*.py
+noremap <F7> :SyntasticCheck<cr>:Errors<cr>
+noremap <C-F7> :lclose<cr>
+noremap <F8> :TagbarToggle<cr>
+
+noremap <leader>fn :echo expand("%:p")<cr>
+noremap <leader>dycm :YcmDebugInfo<cr>
+
+noremap <F10> :YcmCompleter GoTo<cr>:echo expand('%:p')<cr>
+noremap <C-F10> "zyiw:stselect <C-R>z<cr>
+noremap <leader><F10> :YcmCompleter GoToReferences<cr>
+"Open (listed)tag in new window
+"noremap <F10> "zyiw:tselect <C-R>z<cr>
+
+
+noremap <leader>ffi :YcmCompleter FixIt<cr>
+noremap <leader>g :GitGutterLineHighlightsToggle<cr>
+" Toggle line numbers with <leader>nn, makes copying cleaner
+noremap <leader>nn :set nonumber!<CR>:set foldcolumn=0<CR>
+" Don't use Ex mode, use Q for formatting
+map Q gq
+
+
 " PATHOGEN (plugin management)
 "Must precede filetype detection
 :call pathogen#infect()
@@ -26,16 +53,16 @@ set guioptions-=T "remove gui tool bar.
 let g:airline#extentions#tabline#enabled = 1
 "set statusline+=...[%{&fo}]...
 
-" GIT
-
-noremap <leader>g :GitGutterLineHighlightsToggle<cr>
-
 "SYNTASTIC
 "
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
 "set statusline+=%{virtualenv#statusline()}
-set statusline+=%*
+"set statusline+=%*
+let g:syntastic_mode_map = {
+    \ "mode": "passive",
+    \ "active_filetypes": [],
+    \ "passive_filetypes": [] }
 
 "Only populate location list when :Errors is run
 let g:syntastic_always_populate_loc_list = 1
@@ -53,34 +80,6 @@ let g:syntastic_python_pylint_args = '--rcfile=/srv/host/projects/web2py/applica
 let g:syntastic_python_checkers = ['pylint']
 
 
-" TAG, NAVIGATION & Static Analisys
-
-""""
-noremap <leader>fn :echo expand("%:p")<cr>
-noremap <F7> :SyntasticCheck<cr>:Errors<cr>
-noremap <C-F7> :lclose<cr>
-noremap <leader>dycm :YcmDebugInfo<cr>
-noremap <F8> :TagbarToggle<cr>
-
-noremap <F10> :YcmCompleter GoTo<cr>:echo expand('%:p')<cr>
-noremap <leader><F10> :YcmCompleter GoToReferences<cr>
-"Open (listed)tag in new window
-noremap <C-F10> "zyiw:stselect <C-R>z<cr>
-"noremap <F10> "zyiw:tselect <C-R>z<cr>
-
-noremap <leader>ffi :YcmCompleter FixIt<cr>
-
-""""
-
-
-" SEARCH
-"
-noremap <F3> "zyiw:vimgrep <C-R>z **/*.py
-
-" Toggle line numbers with <leader>nn, makes copying cleaner
-noremap <leader>nn :set nonumber!<CR>:set foldcolumn=0<CR>
-" Don't use Ex mode, use Q for formatting
-map Q gq
 
 " tags {{{1
 " With the following setting, Vim will search for the file named 'tags',
