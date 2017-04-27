@@ -7,14 +7,14 @@ let g:ycm_collect_identifiers_from_tags_files = 1
 
 noremap <F3> "zyiw:vimgrep <C-R>z **/*.py
 noremap <F7> :SyntasticCheck<cr>:Errors<cr>
-noremap <C-F7> :lclose<cr>
+noremap <S-F7> :lclose<cr>
 noremap <F8> :TagbarToggle<cr>
 
 noremap <leader>fn :echo expand("%:p")<cr>
 noremap <leader>dycm :YcmDebugInfo<cr>
 
 noremap <F10> :YcmCompleter GoTo<cr>:echo expand('%:p')<cr>
-noremap <C-F10> "zyiw:stselect <C-R>z<cr>
+noremap <S-F10> "zyiw:stselect <C-R>z<cr>
 noremap <leader><F10> :YcmCompleter GoToReferences<cr>
 "Open (listed)tag in new window
 "noremap <F10> "zyiw:tselect <C-R>z<cr>

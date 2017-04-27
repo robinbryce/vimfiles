@@ -4,15 +4,9 @@
 [submodule "bundle/nerdtree"]
 	path = bundle/nerdtree
 	url = https://github.com/scrooloose/nerdtree.git
-[submodule "FastFold"]
-	path = FastFold
-	url = https://github.com/Konfekt/FastFold.git
 [submodule "bundle/FastFold"]
 	path = bundle/FastFold
 	url = https://github.com/Konfekt/FastFold.git
-[submodule "bundle/SimplyFold"]
-	path = bundle/SimplyFold
-	url = https://github.com/tmhedberg/SimpylFold.git
 [submodule "bundle/syntastic"]
 	path = bundle/syntastic
 	url = https://github.com/vim-syntastic/syntastic.git
@@ -31,3 +25,6 @@
 [submodule "bundle/tagbar"]
 	path = bundle/tagbar
 	url = git://github.com/majutsushi/tagbar
+[submodule "bundle/minibufexpl"]
+	path = bundle/minibufexpl
+	url = https://github.com/fholgado/minibufexpl.vim.git
