@@ -2,6 +2,9 @@
 
 """"
 
+" YouCompleteMe options
+let g:ycm_collect_identifiers_from_tags_files = 1
+
 noremap <F3> "zyiw:vimgrep <C-R>z **/*.py
 noremap <F7> :SyntasticCheck<cr>:Errors<cr>
 noremap <C-F7> :lclose<cr>
