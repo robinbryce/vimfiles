@@ -1,3 +1,8 @@
+"Secret sauce
+"
+" Insert space around 'word'
+" Insert quotes around 'word'
+
 " TAG, NAVIGATION & Static Analisys
 
 """"
@@ -6,6 +11,8 @@
 let g:ycm_collect_identifiers_from_tags_files = 1
 
 noremap <F3> "zyiw:vimgrep <C-R>z **/*.py
+noremap <F4> :MBEToggle<cr>
+
 noremap <F7> :SyntasticCheck<cr>:Errors<cr>
 noremap <S-F7> :lclose<cr>
 noremap <F8> :TagbarToggle<cr>
