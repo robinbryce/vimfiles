@@ -1,17 +1,21 @@
-"Secret sauce
+"sECREt sauce
 "
 " Insert space around 'word'
 " Insert quotes around 'word'
 
 " TAG, NAVIGATION & Static Analisys
-
+" toggle scroll offset between 0 or 999
+" toggle auto line breaks
 """"
+
+"minibufexpl options
+
 
 " YouCompleteMe options
 let g:ycm_collect_identifiers_from_tags_files = 1
 
 noremap <F3> "zyiw:vimgrep <C-R>z **/*.py
-noremap <F4> :MBEToggle<cr>
+noremap <F4> :buffers<cr>
 
 noremap <F7> :SyntasticCheck<cr>:Errors<cr>
 noremap <S-F7> :lclose<cr>
@@ -51,10 +55,9 @@ if win_shell
   let home=join(split($HOME, '/'), '\')
   "let vimfilesdir=home . "\\Dropbox\\vimfiles"
   let vimfilesdir=home . "\\vimfiles"
-  exec "set runtimepath-=" . vimfilesdir . "\\bundle\\YouCompleteMe"
+  "exec "set runtimepath-=" . vimfilesdir . "\\bundle\\YouCompleteMe"
 endif
 "
-"source ~/vimfiles/bundle/plugin/minibufexpl.vim
 
 " GUI OPTIONS
 set guioptions-=T "remove gui tool bar.
@@ -81,12 +84,12 @@ let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 
 "let g:syntastic_python_python_exec = 'python3'
-let g:syntastic_python_python_exec = '~/pyenvs/web2py/bin/python2.7'
-let g:syntastic_python_pylint_exec = '~/pyenvs/web2py/bin/pylint'
+let g:syntastic_python_python_exec = '~/pyenvs/pydevtools/bin/python3.5'
+let g:syntastic_python_pylint_exec = '~/pyenvs/pydevtools/bin/pylint'
 
 " Note: python path can be manipulated in pylintrc
 
-let g:syntastic_python_pylint_args = '--rcfile=/srv/host/projects/web2py/applications/icss/pylintrc'
+"let g:syntastic_python_pylint_args = '--rcfile=/srv/host/projects/web2py/applications/icss/pylintrc'
 let g:syntastic_python_checkers = ['pylint']
 
 
@@ -117,9 +120,8 @@ set nowrap
                                 " new buffer - NOTE this breaks session saving.
                                 " See <http://vim.wikia.com/wiki/VimTip64>
 
-" Default tab setup is biased for python
-set sw=4 ts=4 smarttab et
-" Show whitespace - as its significant for Python
+
+" Show whitespace
 set list listchars=tab:`\ ,trail:-
 
 " Biased for terminal use, hence wrap at 79

@@ -1,5 +1,5 @@
 [submodule "bundle/SimpylFold"]
-	path = bundle/SimpylFold
+	path = bundle/SimplyFold
 	url = https://github.com/tmhedberg/SimpylFold.git
 [submodule "bundle/nerdtree"]
 	path = bundle/nerdtree
@@ -25,6 +25,3 @@
 [submodule "bundle/tagbar"]
 	path = bundle/tagbar
 	url = git://github.com/majutsushi/tagbar
-[submodule "bundle/minibufexpl"]
-	path = bundle/minibufexpl
-	url = https://github.com/fholgado/minibufexpl.vim.git
