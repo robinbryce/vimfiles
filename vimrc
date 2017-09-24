@@ -84,12 +84,11 @@ let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 
 "let g:syntastic_python_python_exec = 'python3'
-let g:syntastic_python_python_exec = '~/pyenvs/pydevtools/bin/python3.5'
-let g:syntastic_python_pylint_exec = '~/pyenvs/pydevtools/bin/pylint'
-
+let g:syntastic_python_python_exec = '~/pyenvs/pydev/bin/python3'
+let g:syntastic_python_pylint_exec = '~/pyenvs/pydev/bin/pylint'
 " Note: python path can be manipulated in pylintrc
+let g:syntastic_python_pylint_args = '--rcfile=~/pyenvs/pydev/pylintrc'
 
-"let g:syntastic_python_pylint_args = '--rcfile=/srv/host/projects/web2py/applications/icss/pylintrc'
 let g:syntastic_python_checkers = ['pylint']
 
 
