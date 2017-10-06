@@ -21,6 +21,9 @@ noremap <F7> :SyntasticCheck<cr>:Errors<cr>
 noremap <S-F7> :lclose<cr>
 noremap <F8> :TagbarToggle<cr>
 
+nmap <silent> <Leader>f <Plug>(CommandT)
+nmap <silent> <Leader>t <Plug>(CommandTTag)
+
 noremap <leader>fn :echo expand("%:p")<cr>
 noremap <leader>dycm :YcmDebugInfo<cr>
 
