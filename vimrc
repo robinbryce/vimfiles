@@ -42,10 +42,39 @@ noremap <leader>nn :set nonumber!<CR>:set foldcolumn=0<CR>
 map Q gq
 
 
-" PATHOGEN (plugin management)
-"Must precede filetype detection
-:call pathogen#infect()
-:call pathogen#helptags()
+set nocompatible
+filetype off
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'VundleVim/Vundle.vim'
+
+" Display of state of things.
+Plugin 'vim-airline/vim-airline'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'tpope/vim-fugitive'
+
+" Navigation
+Plugin 'scrooloose/nerdtree'
+Plugin 'Konfekt/FastFold'
+Plugin 'majutsushi/tagbar'
+
+" Finding things, including completions
+Plugin 'git://git.wincent.com/command-t.git'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'mileszs/ack.vim'
+
+" Environments
+Plugin 'plytophogy/vim-virtualenv'
+
+" Building things
+Plugin 'vim-syntastic/syntastic'
+Plugin 'fatih/vim-go'
+
+
+call vundle#end()
+filetype plugin indent on
 
 " Plugins to disable.
 "set runtimepath-=~/.vim/bundle/tagbar
@@ -113,7 +142,6 @@ set ignorecase                  " coupled with smartcase, this means insensitive
 set smartcase                   " unless search string is mixed case.
 set modelines=0                 " Prevents some exploits.
 set viminfo='100,f1             " Save marks for 100 files, save global marks
-set nocompatible                " Use Vim defaults (much better!)
 set shortmess=AI
 set noequalalways               " don't make all windows same size after split
 set autowrite                   " write file whenever you get taken elsewhere
@@ -151,10 +179,9 @@ map <MiddleMouse> <Nop>
 imap <MiddleMouse> <Nop>
 
 if version >= 600
-    filetype on
-    filetype plugin on
+    "filetype plugin on
     "filetype plugin indent on
-    filetype indent on
+    "filetype indent on
     colorscheme marklar
 endif
 
