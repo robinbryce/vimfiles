@@ -4,7 +4,7 @@
 "
 " go.vim: Vim filetype plugin for Go.
 
-setlocal sw=2 ts=2 noet
+setlocal sw=4 ts=4 noet
 
 if exists("b:did_ftplugin")
   finish
