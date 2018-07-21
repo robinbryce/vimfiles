@@ -12,14 +12,17 @@
 "minibufexpl options
 
 
-" YouCompleteMe options
-let g:ycm_collect_identifiers_from_tags_files = 1
+" LEADER <leader>
+let mapleader = ","
 
 nnoremap <F2> :NERDTreeToggle<cr>
 noremap <F3> "zyiw:Ack <C-R>z
 au FileType go nmap <S-F3> :GoDeclsDir<cr>
 
 noremap <F4> :buffers<cr>
+
+noremap <F5> :DlvDebug main.go --build-flags="-gcflags='-N -l'" --
+noremap <F9> :DlvToggleBreakpoint<cr>
 
 noremap <F7> :SyntasticCheck<cr>:Errors<cr>
 noremap <S-F7> :lclose<cr>
@@ -38,7 +41,6 @@ noremap <leader><F10> :YcmCompleter GoToReferences<cr>
 "noremap <F10> "zyiw:tselect <C-R>z<cr>
 
 
-noremap <leader>ffi :YcmCompleter FixIt<cr>
 noremap <leader>g :GitGutterLineHighlightsToggle<cr>
 " Toggle line numbers with <leader>nn, makes copying cleaner
 noremap <leader>nn :set nonumber!<CR>:set foldcolumn=0<CR>
@@ -238,6 +240,10 @@ let g:airline#extensions#tabline#show_tabs = 0
 " directory and then recursively to the directory one level above, till it
 " either locates the 'tags' file or reaches the root directory
 set tags=./tags;
+
+" YouCompleteMe options
+let g:ycm_collect_identifiers_from_tags_files = 1
+
 
 " Language: Go
 " Tagbar configuration for Golang
