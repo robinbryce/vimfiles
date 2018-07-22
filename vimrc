@@ -16,12 +16,17 @@
 let mapleader = ","
 
 nnoremap <F2> :NERDTreeToggle<cr>
-noremap <F3> "zyiw:Ack <C-R>z
+noremap <F3> :Ack <cword><cr>
 au FileType go nmap <S-F3> :GoDeclsDir<cr>
 
 noremap <F4> :buffers<cr>
 
+" F5 debug <filetype> (see after/ftplugin's)
 noremap <F5> :DlvDebug main.go --build-flags="-gcflags='-N -l'" --
+" F6 test <filetype> (see after/ftplugin's)
+noremap <F6> :Pytest project<cr>
+noremap <S-F6> :Pytest method<cr>
+" F9 toggle debug breakpoint <filetype> (see after/ftplugin's)
 noremap <F9> :DlvToggleBreakpoint<cr>
 
 noremap <F7> :SyntasticCheck<cr>:Errors<cr>
@@ -92,11 +97,14 @@ Plug 'mileszs/ack.vim'
 "----------------------------------------
 " Checking things & Building things
 Plug 'vim-syntastic/syntastic'
-
+Plug 'alfredodeza/pytest.vim'
 " Building things
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'neomake/neomake'
 
+"----------------------------------------
+" Editing
+Plug 'tpope/vim-surround'
 "----------------------------------------
 " Completions
 "Plug 'Valloric/YouCompleteMe'
