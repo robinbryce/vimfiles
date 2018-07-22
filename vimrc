@@ -40,7 +40,10 @@ noremap <leader><F10> :YcmCompleter GoToReferences<cr>
 "Open (listed)tag in new window
 "noremap <F10> "zyiw:tselect <C-R>z<cr>
 
-
+noremap <leader>l :set scrolloff=999<cr>
+noremap <leader>L :set scrolloff=0<cr>
+noremap <leader>s :set spell<cr>
+noremap <leader>S :set nospell<cr>
 noremap <leader>g :GitGutterLineHighlightsToggle<cr>
 " Toggle line numbers with <leader>nn, makes copying cleaner
 noremap <leader>nn :set nonumber!<CR>:set foldcolumn=0<CR>
@@ -59,8 +62,6 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
-"Plug 'VundleVim/Vundle.vim'
-
 "----------------------------------------
 " Environments
 Plug 'plytophogy/vim-virtualenv'
@@ -78,6 +79,7 @@ endif
 
 "----------------------------------------
 " NAVIGATION
+Plug 'christoomey/vim-tmux-navigator' "Use same window navigation for tmux and vim
 Plug 'scrooloose/nerdtree'
 Plug 'Konfekt/FastFold'
 Plug 'majutsushi/tagbar'
@@ -228,12 +230,19 @@ let g:airline#extentions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_tabs = 0
 
 "set statusline+=...[%{&fo}]...
+"----------------------------------------
+" Environments
+"
+set statusline+=%{virtualenv#statusline()}
+let g:virtualenv_directory = '~/pyenvs'
 
 "----------------------------------------
 " Navigation and Folding
 "----------------------------------------
 "
 "----------------------------------------
+
+
 " Tags
 " With the following setting, Vim will search for the file named 'tags',
 " starting with the directory of the current file and then going to the parent
@@ -311,6 +320,9 @@ let g:NERDTreeChDirMode = 2
 if has('nvim')
     " Enable deoplete on startup
     let g:deoplete#enable_at_startup = 1
+    let g:deoplete#sources#jedi#python_path = '/Users/puk/pyenvs/pydev/bin/python3'
+    let g:python_host_prog = '/Users/puk/pyenvs/pydev/bin/python3'
+    let g:python3_host_prog = '/Users/puk/pyenvs/pydev/bin/python3'
 endif
 
 " Disable deoplete when in multi cursor mode
@@ -330,7 +342,6 @@ endfunction
 "
 "set statusline+=%#warningmsg#
 "set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%{virtualenv#statusline()}
 "set statusline+=%*
 let g:syntastic_mode_map = {
     \ "mode": "passive",
