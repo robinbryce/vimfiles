@@ -64,7 +64,8 @@ if !exists("s:main")
         hi Error            guifg=#FFFFFF guibg=#000000            ctermfg=7 ctermbg=0 cterm=bold
         hi ErrorMsg         guifg=#8eff2e guibg=#204d40
         hi FoldColumn       guifg=#00BBBB guibg=#204d40
-        hi Folded           guifg=#44DDDD guibg=#204d40            ctermfg=0 ctermbg=8 cterm=bold
+        "hi Folded           guifg=#44DDDD guibg=#204d40            ctermfg=0 ctermbg=8 cterm=bold
+        hi Folded           guifg=#44DDDD guibg=#204d40
 
         hi IncSearch        guibg=#52891f gui=bold
         hi LineNr           guifg=#38ff56 guibg=#204d40

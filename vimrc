@@ -25,7 +25,7 @@ noremap <F4> :buffers<cr>
 noremap <F5> :DlvDebug main.go --build-flags="-gcflags='-N -l'" --
 " F6 test <filetype> (see after/ftplugin's)
 noremap <F6> :Pytest project<cr>
-noremap <S-F6> :Pytest method<cr>
+noremap <C-F6> :Pytest method<cr>
 " F9 toggle debug breakpoint <filetype> (see after/ftplugin's)
 noremap <F9> :DlvToggleBreakpoint<cr>
 
@@ -77,8 +77,8 @@ Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 
+Plug 'w0rp/ale'
 if has ('nvim')
-  Plug 'w0rp/ale'
   Plug 'sebdah/vim-delve'
 endif
 
@@ -87,6 +87,7 @@ endif
 Plug 'christoomey/vim-tmux-navigator' "Use same window navigation for tmux and vim
 Plug 'scrooloose/nerdtree'
 Plug 'Konfekt/FastFold'
+Plug 'tmhedberg/SimpylFold'
 Plug 'majutsushi/tagbar'
 
 "----------------------------------------
@@ -262,6 +263,10 @@ set tags=./tags;
 let g:ycm_collect_identifiers_from_tags_files = 1
 
 
+let g:fastfold_savehook = 0 " Don't update folds on save
+"let g:SimpylFold_docstring_preview = 1 "Preview the folded doc strings
+
+
 " Language: Go
 " Tagbar configuration for Golang
 let g:tagbar_type_go = {
@@ -328,9 +333,15 @@ let g:NERDTreeChDirMode = 2
 if has('nvim')
     " Enable deoplete on startup
     let g:deoplete#enable_at_startup = 1
-    let g:deoplete#sources#jedi#python_path = '/Users/puk/pyenvs/pydev/bin/python3'
-    let g:python_host_prog = '/Users/puk/pyenvs/pydev/bin/python3'
-    let g:python3_host_prog = '/Users/puk/pyenvs/pydev/bin/python3'
+    let g:deoplete#sources#jedi#python_path = '/home/rbryce/.pyenv/versions/neovim3/bin/python'
+    let g:python_host_prog = '/home/rbryce/.pyenv/versions/neovim3/bin/python'
+    let g:python3_host_prog = '/home/rbryce/.pyenv/versions/neovim3/bin/python'
+    "let g:deoplete#sources#jedi#python_path = '/Users/puk/pyenvs/pydev/bin/python3'
+    "let g:python_host_prog = '/Users/puk/pyenvs/pydev/bin/python3'
+    "let g:python3_host_prog = '/Users/puk/pyenvs/pydev/bin/python3'
+else
+    let g:python_host_prog = '/home/rbryce/.pyenv/versions/neovim3/bin/python'
+    let g:python3_host_prog = '/home/rbryce/.pyenv/versions/neovim3/bin/python'
 endif
 
 " Disable deoplete when in multi cursor mode
@@ -363,10 +374,13 @@ let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 
 "let g:syntastic_python_python_exec = 'python3'
-let g:syntastic_python_python_exec = '~/pyenvs/pydev/bin/python3'
-let g:syntastic_python_pylint_exec = '~/pyenvs/pydev/bin/pylint'
+"let g:syntastic_python_python_exec = '~/pyenvs/pydev/bin/python3'
+"let g:syntastic_python_pylint_exec = '~/pyenvs/pydev/bin/pylint'
+let g:syntastic_python_python_exec = '~/.pyenv/versions/neovim3/bin/python3'
+let g:syntastic_python_pylint_exec = '~/bin/pylint'
+
 " Note: python path can be manipulated in pylintrc
-let g:syntastic_python_pylint_args = '--rcfile=~/pyenvs/pydev/pylintrc'
+let g:syntastic_python_pylint_args = '--rcfile=~/dotfiles/pylintrc'
 
 let g:syntastic_python_checkers = ['pylint']
 
