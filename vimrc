@@ -264,7 +264,7 @@ let g:ycm_collect_identifiers_from_tags_files = 1
 
 
 let g:fastfold_savehook = 0 " Don't update folds on save
-"let g:SimpylFold_docstring_preview = 1 "Preview the folded doc strings
+let g:SimpylFold_docstring_preview = 1 "Preview the folded doc strings
 
 
 " Language: Go
@@ -326,22 +326,28 @@ let NERDTreeShowHidden = 1
 " Allow NERDTree to change session root.
 let g:NERDTreeChDirMode = 2
 
+let g:python3_host_default='python3' " Isn't going to work, but errors will make sense.
+for py3path in [
+  \ '/home/rbryce/.pyenv/versions/neovim3/bin/python3',
+  \ '/Users/puk/.pyenv/versions/py3enovim/bin/python3',
+  \ '/home/rbryce/pyenvs/pydev/bin/python3',
+  \ '/Users/puk/pyenvs/pydev/bin/python3']
+  if filereadable(py3path)
+    "echom 'python3_host_default=' . py3path
+    let g:python3_host_default=py3path
+    break
+  endif
+endfor
 "----------------------------------------
 " Completions
 "
 " Deoplete
+let g:python3_host_default = python3_host_default
+let g:python_host_prog = python3_host_default
 if has('nvim')
     " Enable deoplete on startup
     let g:deoplete#enable_at_startup = 1
-    let g:deoplete#sources#jedi#python_path = '/home/rbryce/.pyenv/versions/neovim3/bin/python'
-    let g:python_host_prog = '/home/rbryce/.pyenv/versions/neovim3/bin/python'
-    let g:python3_host_prog = '/home/rbryce/.pyenv/versions/neovim3/bin/python'
-    "let g:deoplete#sources#jedi#python_path = '/Users/puk/pyenvs/pydev/bin/python3'
-    "let g:python_host_prog = '/Users/puk/pyenvs/pydev/bin/python3'
-    "let g:python3_host_prog = '/Users/puk/pyenvs/pydev/bin/python3'
-else
-    let g:python_host_prog = '/home/rbryce/.pyenv/versions/neovim3/bin/python'
-    let g:python3_host_prog = '/home/rbryce/.pyenv/versions/neovim3/bin/python'
+    let g:deoplete#sources#jedi#python_path = python3_host_default
 endif
 
 " Disable deoplete when in multi cursor mode

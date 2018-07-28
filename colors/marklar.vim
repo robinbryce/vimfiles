@@ -54,6 +54,7 @@ if !exists("s:main")
 
         execute "hi Ignore           guifg=".s:ignore." guibg=NONE               ctermfg=0"
 
+        hi ALEError cterm=undercurl ctermfg=red
         hi Comment          guifg=#00BBBB guibg=NONE               ctermfg=6 cterm=none
         hi Cursor           guifg=NONE    guibg=#FF0000
         hi DiffAdd          guifg=NONE    guibg=#136769            ctermfg=4 ctermbg=7 cterm=NONE
