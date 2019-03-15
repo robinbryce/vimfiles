@@ -328,12 +328,9 @@ let g:NERDTreeChDirMode = 2
 
 let g:python3_host_default='python3' " Isn't going to work, but errors will make sense.
 for py3path in [
-  \ '/home/rbryce/.pyenv/versions/neovim3/bin/python3',
-  \ '/Users/puk/.pyenv/versions/py3enovim/bin/python3',
-  \ '/home/rbryce/pyenvs/pydev/bin/python3',
+  \ '/Users/puk/.pyenv/versions/py3neovim/bin/python3',
   \ '/Users/puk/pyenvs/pydev/bin/python3']
   if filereadable(py3path)
-    "echom 'python3_host_default=' . py3path
     let g:python3_host_default=py3path
     break
   endif
@@ -401,6 +398,7 @@ let g:neomake_info_sign = {'text': 'ℹ', 'texthl': 'NeomakeInfoSign'}
 
 " Ale
 
+let g:ale_lint_on_text_changed=0
 " Error and warning signs.
 let g:ale_sign_error = '⤫'
 let g:ale_sign_warning = '⚠'
