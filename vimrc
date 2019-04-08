@@ -117,8 +117,9 @@ else
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
 let g:deoplete#enable_at_startup = 1
-Plug 'zchee/deoplete-go', { 'do': 'make'}      " Go auto completion
-Plug 'zchee/deoplete-jedi'                     " Python auto completion
+Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}      " Go auto completion
+Plug 'deoplete-plugins/deoplete-jedi'                     " Python auto completion
+
 Plug 'ctrlpvim/ctrlp.vim'          " CtrlP is installed to support tag finding in vim-go
 
 "----------------------------------------
@@ -398,7 +399,10 @@ let g:neomake_info_sign = {'text': 'ℹ', 'texthl': 'NeomakeInfoSign'}
 
 " Ale
 
+let g:ale_linters = {'go':['gofmt', 'golangci-lint']}
+
 let g:ale_lint_on_text_changed=0
+let g:ale_go_golangci_lint_executable = join([expand("~"), "go/bin/golangci-lint"], "/")
 " Error and warning signs.
 let g:ale_sign_error = '⤫'
 let g:ale_sign_warning = '⚠'
@@ -408,6 +412,7 @@ let g:airline#extensions#ale#enabled = 1
 
 " Per Language settings (checking, completion, etc)
 "
+let g:go_bin_path = join([expand("~"), "go/bin"], "/")
 let g:go_highlight_build_constraints = 1
 let g:go_highlight_extra_types = 1
 let g:go_highlight_fields = 1
