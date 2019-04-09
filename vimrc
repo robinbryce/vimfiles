@@ -111,15 +111,16 @@ Plug 'tpope/vim-surround'
 "Plug 'Valloric/YouCompleteMe'
 if has ('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugs' }
+  Plug 'stamblerre/gocode', { 'rtp': 'nvim', 'do': '~/.config/nvim/plugged/gocode/nvim/symlink.sh' }
 else
   Plug 'Shougo/deoplete.nvim'
+  Plug 'stamblerre/gocode', { 'rtp': 'nvim', 'do': '~/.vim/plugged/gocode/nvim/symlink.sh' }
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
 let g:deoplete#enable_at_startup = 1
 Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}      " Go auto completion
 Plug 'deoplete-plugins/deoplete-jedi'                     " Python auto completion
-
 Plug 'ctrlpvim/ctrlp.vim'          " CtrlP is installed to support tag finding in vim-go
 
 "----------------------------------------
@@ -149,6 +150,77 @@ Plug 'lifepillar/pgsql.vim'                    " PostgreSQL syntax highlighting
 
 call plug#end()
 filetype plugin indent on
+
+"------------------------------------------------------------------------------
+" Functions
+"------------------------------------------------------------------------------
+
+" Find a file, starting at path and working upwards.
+"
+" Ignores the various case sensitivity settings that are user controlable.
+" Returns:
+"  - The empty string: If the file is not found
+"  - prefix + path-to-file otherwise
+"------------------------------------------------------------------------------
+function! FindFileUp(prefix, what, where)
+    let fn = findfile(a:what, escape(a:where, ' ') . ';')
+    if a:prefix == ''
+        return fn !=# '' ? escape(fn, ' ') : ''
+    endif
+    return fn !=# '' ? a:prefix . escape(fn, ' ') : ''
+endfunction
+
+" Exactly as FileFindUp but for a directory.
+function! FindDirUp(prefix, what, where)
+    let fn = finddir(a:what, escape(a:where, ' ') . ';')
+    if a:prefix == ''
+        return fn !=# '' ? escape(fn, ' ') : ''
+    endif
+    return fn !=# '' ? a:prefix . escape(fn, ' ') : ''
+endfunction
+
+function! JoinHome(path)
+   return join([expand("$HOME"), a:path], "/")
+endfunction
+
+" Locate a bin directory suitable for GOBIN by searching (first) for go.mod
+function! FindGoBin()
+
+    " Prioritize go.mod found above the first file opened.
+    let gomod = FindFileUp("", "go.mod", expand("%:h"))
+    if gomod != ''
+        return join([fnamemodify(gomod, ":h"), "bin"], "/")
+    endif
+
+    " From current working directory
+    let gomod = FindFileUp("", "go.mod", getcwd())
+    if gomod != ''
+        return join([getcwd(), fnamemodify(gomod, ":h"), "bin"], "/")
+    endif
+    " Special, From current working directory/src
+    let gomod = FindFileUp("", "go.mod", getcwd() . "/src")
+    if gomod != ''
+        return join([getcwd(), fnamemodify(gomod, ":h"), "bin"], "/")
+    endif
+
+    " Fallback to conventional user globals
+    let gobin = expand("$GOBIN")
+    if gobin != "$GOBIN"
+        return gobin
+    endif
+
+    let gopath = expand("$GOPATH")
+    if gopath != "$GOPATH"
+        return join([gopath, "bin"], "/")
+    endif
+
+    return JoinHome("go/bin")
+
+endfunction
+
+let g:context_derived_gobin = FindGoBin()
+let g:context_derived_gopath = fnamemodify(g:context_derived_gobin, ":h")
+
 
 " Plugs to disable.
 "set runtimepath-=~/.vim/bundle/tagbar
@@ -244,7 +316,7 @@ let g:airline#extensions#tabline#show_tabs = 0
 " Environments
 "
 set statusline+=%{virtualenv#statusline()}
-let g:virtualenv_directory = '~/pyenvs'
+let g:virtualenv_directory = '~/.pyenv/versions'
 
 "----------------------------------------
 " Navigation and Folding
@@ -269,6 +341,13 @@ let g:SimpylFold_docstring_preview = 1 "Preview the folded doc strings
 
 
 " Language: Go
+
+" Always prefer the context derived GOPATH and GOBIN
+
+let $GOBIN = g:context_derived_gobin
+let $GOPATH = g:context_derived_gopath
+
+
 " Tagbar configuration for Golang
 let g:tagbar_type_go = {
     \ 'ctagstype' : 'go',
@@ -329,6 +408,7 @@ let g:NERDTreeChDirMode = 2
 
 let g:python3_host_default='python3' " Isn't going to work, but errors will make sense.
 for py3path in [
+  \ '/Users/robin/.pyenv/versions/neovim3/bin/python3',
   \ '/Users/puk/.pyenv/versions/py3neovim/bin/python3',
   \ '/Users/puk/pyenvs/pydev/bin/python3']
   if filereadable(py3path)
@@ -363,9 +443,9 @@ endfunction
 "
 " Syntastic
 "
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
 let g:syntastic_mode_map = {
     \ "mode": "passive",
     \ "active_filetypes": [],
@@ -377,16 +457,17 @@ let g:syntastic_auto_loc_list = 2
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 
-"let g:syntastic_python_python_exec = 'python3'
-"let g:syntastic_python_python_exec = '~/pyenvs/pydev/bin/python3'
-"let g:syntastic_python_pylint_exec = '~/pyenvs/pydev/bin/pylint'
-let g:syntastic_python_python_exec = '~/.pyenv/versions/neovim3/bin/python3'
-let g:syntastic_python_pylint_exec = '~/bin/pylint'
+" syntastic - go --------------------------------------------------------------
+let g:syntastic_go_checkers = ['go', 'golint', 'govet']
+" syntastic - python ----------------------------------------------------------
+let g:syntastic_python_python_exec = '~/.pyenv/versions/pydev3/bin/python3'
+let g:syntastic_python_pylint_exec = 'pylint'
 
 " Note: python path can be manipulated in pylintrc
-let g:syntastic_python_pylint_args = '--rcfile=~/dotfiles/pylintrc'
+"let g:syntastic_python_pylint_args = '--rcfile=~/dotfiles/pylintrc'
 
-let g:syntastic_python_checkers = ['pylint']
+let g:syntastic_python_checkers = ['pep8']
+"let g:syntastic_python_checkers = ['pylint']
 
 
 " Plug: neomake/neomake
@@ -402,7 +483,14 @@ let g:neomake_info_sign = {'text': 'ℹ', 'texthl': 'NeomakeInfoSign'}
 let g:ale_linters = {'go':['gofmt', 'golangci-lint']}
 
 let g:ale_lint_on_text_changed=0
-let g:ale_go_golangci_lint_executable = join([expand("~"), "go/bin/golangci-lint"], "/")
+
+" Prefer the context derived gobin directory
+if filereadable(g:context_derived_gobin . "/golangci-lint")
+    let g:ale_go_golangci_lint_executable = join([
+        \ g:context_derived_gobin, 'golangci-lint'], '/')
+endif
+" Otherwise, rely on usual GOPATH/GOBIN
+
 " Error and warning signs.
 let g:ale_sign_error = '⤫'
 let g:ale_sign_warning = '⚠'
@@ -412,7 +500,8 @@ let g:airline#extensions#ale#enabled = 1
 
 " Per Language settings (checking, completion, etc)
 "
-let g:go_bin_path = join([expand("~"), "go/bin"], "/")
+
+let g:go_bin_path = g:context_derived_gobin
 let g:go_highlight_build_constraints = 1
 let g:go_highlight_extra_types = 1
 let g:go_highlight_fields = 1
