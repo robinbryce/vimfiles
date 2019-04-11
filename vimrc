@@ -501,7 +501,11 @@ let g:airline#extensions#ale#enabled = 1
 
 " Per Language settings (checking, completion, etc)
 "
+" go golang Go
 
+" This puts a wrapper script for the go binary at the front of the path. The
+" wrapper arranges for 'go' to execute in a container
+let $PATH='~/jitsuin/robinbryce/workflow/vimgo:' . $PATH
 let g:go_bin_path = g:context_derived_gobin
 let g:go_highlight_build_constraints = 1
 let g:go_highlight_extra_types = 1
