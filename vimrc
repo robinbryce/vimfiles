@@ -9,9 +9,6 @@
 " toggle auto line breaks
 """"
 
-"minibufexpl options
-
-
 " LEADER <leader>
 let mapleader = ","
 
@@ -324,6 +321,10 @@ let g:virtualenv_directory = '~/.pyenv/versions'
 "
 "----------------------------------------
 
+"vim-airline tabline options
+let g:airline#extensions#tabline#enabled = 1
+"let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
 
 " Tags
 " With the following setting, Vim will search for the file named 'tags',
