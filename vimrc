@@ -184,20 +184,20 @@ endfunction
 function! FindGoBin()
 
     " Prioritize go.mod found above the first file opened.
-    let gomod = FindFileUp("", "go.mod", expand("%:h"))
+    let gomod = FindFileUp(getcwd() . "/", "go.mod", getcwd() . "/" . expand("%:h"))
     if gomod != ''
         return join([fnamemodify(gomod, ":h"), "bin"], "/")
     endif
 
     " From current working directory
-    let gomod = FindFileUp("", "go.mod", getcwd())
+    let gomod = FindFileUp(getcwd() . "/", "go.mod", getcwd())
     if gomod != ''
-        return join([getcwd(), fnamemodify(gomod, ":h"), "bin"], "/")
+        return join([fnamemodify(gomod, ":h"), "bin"], "/")
     endif
     " Special, From current working directory/src
-    let gomod = FindFileUp("", "go.mod", getcwd() . "/src")
+    let gomod = FindFileUp(getcwd() . "/", "go.mod", getcwd() . "/src")
     if gomod != ''
-        return join([getcwd(), fnamemodify(gomod, ":h"), "bin"], "/")
+        return join([fnamemodify(gomod, ":h"), "bin"], "/")
     endif
 
     " Fallback to conventional user globals
@@ -212,6 +212,14 @@ function! FindGoBin()
     endif
 
     return JoinHome("go/bin")
+
+endfunction
+
+function! Find_golangci_lint_config()
+    " Look for a go.mod and then derive based on that.
+
+    let gobin = FindGoBin()
+    return join([fnamemodify(gobin, ":h"), ".golangci.yml"], "/")
 
 endfunction
 
@@ -346,7 +354,7 @@ let g:SimpylFold_docstring_preview = 1 "Preview the folded doc strings
 " Always prefer the context derived GOPATH and GOBIN
 
 let $GOBIN = g:context_derived_gobin
-let $GOPATH = g:context_derived_gopath
+"let $GOPATH = g:context_derived_gopath " NOT when GO111MODULES=on
 
 
 " Tagbar configuration for Golang
@@ -481,9 +489,18 @@ let g:neomake_info_sign = {'text': 'ℹ', 'texthl': 'NeomakeInfoSign'}
 
 " Ale
 
+" The golang linters have trouble with cgo, LFLAGS and CPPFLAGS ... if headers
+" aren't found, the linters wont run.
+"
 let g:ale_linters = {'go':['gofmt', 'golangci-lint']}
 
-let g:ale_lint_on_text_changed=0
+let g:ale_lint_on_text_changed = 0
+let g:context_derived_golangci_yml = Find_golangci_lint_config()
+
+"let g:ale_go_golangci_lint_options = "--enable-all"
+if filereadable(g:context_derived_golangci_yml)
+    let g:ale_go_golangci_lint_options = "--enable-all -c " . g:context_derived_golangci_yml
+endif
 
 " Prefer the context derived gobin directory
 if filereadable(g:context_derived_gobin . "/golangci-lint")
