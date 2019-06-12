@@ -16,15 +16,6 @@ nnoremap <F2> :NERDTreeToggle<cr>
 noremap <F3> :Ack <cword><cr>
 au FileType go nmap <S-F3> :GoDeclsDir<cr>
 
-noremap <F4> :buffers<cr>
-
-" F5 debug <filetype> (see after/ftplugin's)
-noremap <F5> :DlvDebug main.go --build-flags="-gcflags='-N -l'" --
-" F6 test <filetype> (see after/ftplugin's)
-noremap <F6> :Pytest project<cr>
-noremap <C-F6> :Pytest method<cr>
-" F9 toggle debug breakpoint <filetype> (see after/ftplugin's)
-noremap <F9> :DlvToggleBreakpoint<cr>
 
 noremap <F7> :SyntasticCheck<cr>:Errors<cr>
 noremap <S-F7> :lclose<cr>
@@ -34,11 +25,13 @@ nmap <silent> <Leader>f <Plug>(CommandT)
 nmap <silent> <Leader>t <Plug>(CommandTTag)
 
 noremap <leader>fn :echo expand("%:p")<cr>
-noremap <leader>dycm :YcmDebugInfo<cr>
 
-noremap <F10> :YcmCompleter GoTo<cr>:echo expand('%:p')<cr>
+noremap <leader>cl :set cursorline<cr>
+noremap <leader>ncl :set nocursorline<cr>
+
+noremap <leader>. :GoInfo<cr>
+
 noremap <S-F10> "zyiw:stselect <C-R>z<cr>
-noremap <leader><F10> :YcmCompleter GoToReferences<cr>
 "Open (listed)tag in new window
 "noremap <F10> "zyiw:tselect <C-R>z<cr>
 
@@ -124,6 +117,7 @@ Plug 'ctrlpvim/ctrlp.vim'          " CtrlP is installed to support tag finding i
 " Syntax highlighting
 "
 Plug 'fatih/vim-go'                            " Go support
+Plug 'rust-lang/rust.vim'
 "Plug 'nsf/gocode', { 'rtp': 'vim', 'do': '~/.vim/plugged/gocode/vim/symlink.sh' } " Go auto completion
 Plug 'nsf/gocode'                              " Go auto completion
 Plug 'pangloss/vim-javascript'                 " JavaScript syntax highlighting
@@ -428,6 +422,9 @@ endfor
 "----------------------------------------
 " Completions
 "
+
+" DONT include preview in complete opt. the preview window is a navigation gutter
+set completeopt=menu
 " Deoplete
 let g:python3_host_default = python3_host_default
 let g:python_host_prog = python3_host_default
@@ -461,8 +458,9 @@ let g:syntastic_mode_map = {
     \ "passive_filetypes": [] }
 
 "Only populate location list when :Errors is run
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 2
+" Use :SyntasticSetLocList to put the errors in the loc list (needs a key binding)
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 0 "never automaticlally open or close, use lopen
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 
@@ -492,6 +490,11 @@ let g:neomake_info_sign = {'text': 'ℹ', 'texthl': 'NeomakeInfoSign'}
 " The golang linters have trouble with cgo, LFLAGS and CPPFLAGS ... if headers
 " aren't found, the linters wont run.
 "
+
+" I don't want the loc or quickfix lists poping up all the time. It's
+" distracting and makes terminal pane navigation less usable (traps the focus).
+let g:ale_set_loclist = 0
+let g:ale_set_quickfix = 0
 let g:ale_linters = {'go':['gofmt', 'golangci-lint']}
 
 let g:ale_lint_on_text_changed = 0
@@ -519,6 +522,10 @@ let g:airline#extensions#ale#enabled = 1
 " Per Language settings (checking, completion, etc)
 "
 " go golang Go
+"
+
+" guru (the default) is rediculously slow
+let g:go_def_mode = 'godef'
 
 " This puts a wrapper script for the go binary at the front of the path. The
 " wrapper arranges for 'go' to execute in a container
