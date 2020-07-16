@@ -74,7 +74,12 @@ endif
 
 "----------------------------------------
 " NAVIGATION
+
+" when the tmux window is zoomed on vim, I don't want it to automatically
+" unzoom when I use window navigation in vim
+let g:tmux_navigator_disable_when_zoomed = 1
 Plug 'christoomey/vim-tmux-navigator' "Use same window navigation for tmux and vim
+
 Plug 'scrooloose/nerdtree'
 Plug 'Konfekt/FastFold'
 Plug 'tmhedberg/SimpylFold'
@@ -100,16 +105,15 @@ Plug 'tpope/vim-surround'
 " Completions
 "Plug 'Valloric/YouCompleteMe'
 if has ('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugs' }
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
   Plug 'stamblerre/gocode', { 'rtp': 'nvim', 'do': '~/.config/nvim/plugged/gocode/nvim/symlink.sh' }
 else
   Plug 'Shougo/deoplete.nvim'
-  Plug 'stamblerre/gocode', { 'rtp': 'nvim', 'do': '~/.vim/plugged/gocode/nvim/symlink.sh' }
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
 let g:deoplete#enable_at_startup = 1
-Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}      " Go auto completion
+"Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}      " Go auto completion
 Plug 'deoplete-plugins/deoplete-jedi'                     " Python auto completion
 Plug 'ctrlpvim/ctrlp.vim'          " CtrlP is installed to support tag finding in vim-go
 
@@ -117,9 +121,10 @@ Plug 'ctrlpvim/ctrlp.vim'          " CtrlP is installed to support tag finding i
 " Syntax highlighting
 "
 Plug 'fatih/vim-go'                            " Go support
+Plug 'tomlion/vim-solidity'
 Plug 'rust-lang/rust.vim'
 "Plug 'nsf/gocode', { 'rtp': 'vim', 'do': '~/.vim/plugged/gocode/vim/symlink.sh' } " Go auto completion
-Plug 'nsf/gocode'                              " Go auto completion
+"Plug 'nsf/gocode'                              " Go auto completion
 Plug 'pangloss/vim-javascript'                 " JavaScript syntax highlighting
 Plug 'leafgarland/typescript-vim'              " TypeScript syntax highlighting
 Plug 'plasticboy/vim-markdown'                 " Markdown syntax highlighting
@@ -176,6 +181,8 @@ endfunction
 
 " Locate a bin directory suitable for GOBIN by searching (first) for go.mod
 function! FindGoBin()
+
+    return expand("~/jitsuin/avid/src/bin")
 
     " Prioritize go.mod found above the first file opened.
     let gomod = FindFileUp(getcwd() . "/", "go.mod", getcwd() . "/" . expand("%:h"))
@@ -269,10 +276,6 @@ set list listchars=tab:`\ ,trail:-
 set wrap
 set textwidth=79
 
-if version >= 703
-    set colorcolumn=80
-endif
-
 set backspace=2
 set splitbelow                  " edit new files in buffer below current one
 
@@ -345,9 +348,7 @@ let g:SimpylFold_docstring_preview = 1 "Preview the folded doc strings
 
 " Language: Go
 
-" Always prefer the context derived GOPATH and GOBIN
-
-let $GOBIN = g:context_derived_gobin
+"let $GOBIN = g:context_derived_gobin
 "let $GOPATH = g:context_derived_gopath " NOT when GO111MODULES=on
 
 
@@ -465,7 +466,7 @@ let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 0
 
 " syntastic - go --------------------------------------------------------------
-let g:syntastic_go_checkers = ['go', 'golint', 'govet']
+let g:syntastic_go_checkers = ['go', 'govet']
 " syntastic - python ----------------------------------------------------------
 let g:syntastic_python_python_exec = '~/.pyenv/versions/pydev3/bin/python3'
 let g:syntastic_python_pylint_exec = 'pylint'
@@ -505,6 +506,9 @@ if filereadable(g:context_derived_golangci_yml)
     let g:ale_go_golangci_lint_options = "--enable-all -c " . g:context_derived_golangci_yml
 endif
 
+let g:ale_python_autopep8_options = "--max-line-length=150 --ignore E402"
+let g:ale_python_flake8_options = "--max-line-length=150 --ignore E402"
+
 " Prefer the context derived gobin directory
 if filereadable(g:context_derived_gobin . "/golangci-lint")
     let g:ale_go_golangci_lint_executable = join([
@@ -526,7 +530,9 @@ let g:airline#extensions#ale#enabled = 1
 
 " guru (the default) is rediculously slow
 let g:go_def_mode = 'godef'
-
+let g:go_info_mode = 'gopls'
+" let g:go_auto_sameids = 0
+"
 " This puts a wrapper script for the go binary at the front of the path. The
 " wrapper arranges for 'go' to execute in a container
 "let $PATH='~/jitsuin/robinbryce/workflow/vimgo:' . $PATH
@@ -553,4 +559,16 @@ let g:go_fmt_command = "goimports"
 " Set the Delve backend.
 let g:delve_backend = "native"
 
+if version >= 703
+    highlight ColorColumn ctermbg=darkgrey
+    set colorcolumn=80
+endif
 
+"if version >= 703
+"    highlight ColorColumn ctermbg=magenta
+"    call matchadd('ColorColumn', '\%81v', 100)
+"endif
+
+hi clear SpellBad
+hi SpellBad cterm=undercurl
+hi SpellBad gui=undercurl
