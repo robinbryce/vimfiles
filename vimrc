@@ -9,6 +9,7 @@
 " toggle auto line breaks
 """"
 
+
 " LEADER <leader>
 let mapleader = ","
 
@@ -89,6 +90,9 @@ Plug 'majutsushi/tagbar'
 " Finding things
 Plug 'git://git.wincent.com/command-t.git'
 Plug 'mileszs/ack.vim'
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
 
 "----------------------------------------
 " Checking things & Building things
@@ -114,7 +118,8 @@ else
 endif
 let g:deoplete#enable_at_startup = 1
 "Plug 'deoplete-plugins/deoplete-go', { 'do': 'make'}      " Go auto completion
-Plug 'deoplete-plugins/deoplete-jedi'                     " Python auto completion
+"Plug 'deoplete-plugins/deoplete-jedi'                     " Python auto completion
+Plug 'davidhalter/jedi-vim'
 Plug 'ctrlpvim/ctrlp.vim'          " CtrlP is installed to support tag finding in vim-go
 
 "----------------------------------------
@@ -410,16 +415,16 @@ let NERDTreeShowHidden = 1
 " Allow NERDTree to change session root.
 let g:NERDTreeChDirMode = 2
 
-let g:python3_host_default='python3' " Isn't going to work, but errors will make sense.
-for py3path in [
-  \ '/Users/robin/.pyenv/versions/neovim3/bin/python3',
-  \ '/Users/puk/.pyenv/versions/py3neovim/bin/python3',
-  \ '/Users/puk/pyenvs/pydev/bin/python3']
-  if filereadable(py3path)
-    let g:python3_host_default=py3path
-    break
-  endif
-endfor
+"let g:python3_host_default='python3' " Isn't going to work, but errors will make sense.
+"for py3path in [
+"  \ '/Users/robin/.pyenv/versions/neovim3/bin/python3',
+"  \ '/Users/puk/.pyenv/versions/py3neovim/bin/python3',
+"  \ '/Users/puk/pyenvs/pydev/bin/python3']
+"  if filereadable(py3path)
+"    let g:python3_host_default=py3path
+"    break
+"  endif
+"endfor
 "----------------------------------------
 " Completions
 "
@@ -427,13 +432,13 @@ endfor
 " DONT include preview in complete opt. the preview window is a navigation gutter
 set completeopt=menu
 " Deoplete
-let g:python3_host_default = python3_host_default
-let g:python_host_prog = python3_host_default
-if has('nvim')
-    " Enable deoplete on startup
-    let g:deoplete#enable_at_startup = 1
-    let g:deoplete#sources#jedi#python_path = python3_host_default
-endif
+"let g:python3_host_default = python3_host_default
+"let g:python_host_prog = python3_host_default
+"if has('nvim')
+"    " Enable deoplete on startup
+"    let g:deoplete#enable_at_startup = 1
+"    let g:deoplete#sources#jedi#python_path = "~/.pyenv/versions/3.7.0/bin/python3"
+"endif
 
 " Disable deoplete when in multi cursor mode
 function! Multiple_cursors_before()
@@ -453,10 +458,10 @@ endfunction
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
-let g:syntastic_mode_map = {
-    \ "mode": "passive",
-    \ "active_filetypes": [],
-    \ "passive_filetypes": [] }
+"let g:syntastic_mode_map = {
+"    \ "mode": "passive",
+"    \ "active_filetypes": ["*.py"],
+"    \ "passive_filetypes": [] }
 
 "Only populate location list when :Errors is run
 " Use :SyntasticSetLocList to put the errors in the loc list (needs a key binding)
@@ -468,15 +473,14 @@ let g:syntastic_check_on_wq = 0
 " syntastic - go --------------------------------------------------------------
 let g:syntastic_go_checkers = ['go', 'govet']
 " syntastic - python ----------------------------------------------------------
-let g:syntastic_python_python_exec = '~/.pyenv/versions/pydev3/bin/python3'
-let g:syntastic_python_pylint_exec = 'pylint'
+"let g:syntastic_python_python_exec = '~/.pyenv/versions/3.7.0/bin/python3'
+"let g:syntastic_python_pylint_exec = 'pylint'
 
 " Note: python path can be manipulated in pylintrc
-"let g:syntastic_python_pylint_args = '--rcfile=~/dotfiles/pylintrc'
+let g:syntastic_python_pylint_args = '--rcfile=~/.pylintrc'
 
-let g:syntastic_python_checkers = ['pep8']
-"let g:syntastic_python_checkers = ['pylint']
-
+"let g:syntastic_python_checkers = ['pep8']
+"let g:syntastic_python_checkers = ['flake8', 'pyflakes', 'pylint']
 
 " Plug: neomake/neomake
 "
@@ -496,7 +500,7 @@ let g:neomake_info_sign = {'text': 'ℹ', 'texthl': 'NeomakeInfoSign'}
 " distracting and makes terminal pane navigation less usable (traps the focus).
 let g:ale_set_loclist = 0
 let g:ale_set_quickfix = 0
-let g:ale_linters = {'go':['gofmt', 'golangci-lint']}
+let g:ale_linters = {'go':['gofmt', 'golangci-lint'], 'python':['pylint']}
 
 let g:ale_lint_on_text_changed = 0
 let g:context_derived_golangci_yml = Find_golangci_lint_config()
@@ -509,6 +513,12 @@ endif
 let g:ale_python_autopep8_options = "--max-line-length=150 --ignore E402"
 let g:ale_python_flake8_options = "--max-line-length=150 --ignore E402"
 
+let g:ale_python_pylint_executable = 'python3'   " or 'python' for Python 2
+"let g:ale_python_pylint_options = '--rcfile /path/to/pylint.rc'
+" The virtualenv detection needs to be disabled.
+let g:ale_python_pylint_use_global = 0
+
+ 
 " Prefer the context derived gobin directory
 if filereadable(g:context_derived_gobin . "/golangci-lint")
     let g:ale_go_golangci_lint_executable = join([
@@ -527,16 +537,18 @@ let g:airline#extensions#ale#enabled = 1
 "
 " go golang Go
 "
+"let g:go_debug=["lsp", "shell-commands"]
 
 " guru (the default) is rediculously slow
-let g:go_def_mode = 'godef'
-let g:go_info_mode = 'gopls'
-" let g:go_auto_sameids = 0
+"let g:go_def_mode = 'godef'
+"let g:go_info_mode = 'gopls'
+"let g:go_auto_sameids = 0
+"let g:go_auto_sameids = 1
 "
 " This puts a wrapper script for the go binary at the front of the path. The
 " wrapper arranges for 'go' to execute in a container
 "let $PATH='~/jitsuin/robinbryce/workflow/vimgo:' . $PATH
-let g:go_bin_path = g:context_derived_gobin
+"let g:go_bin_path = g:context_derived_gobin
 let g:go_highlight_build_constraints = 1
 let g:go_highlight_extra_types = 1
 let g:go_highlight_fields = 1
@@ -547,7 +559,6 @@ let g:go_highlight_structs = 1
 let g:go_highlight_types = 1
 
 " highlighting of all variables of same name
-let g:go_auto_sameids = 1
 
 " Automatically add imports as they are used, not always correct but overall a
 " productivity saving ?
