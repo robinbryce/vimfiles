@@ -8,6 +8,20 @@
 " toggle scroll offset between 0 or 999
 " toggle auto line breaks
 """"
+set pyx=3
+set updatetime=400
+
+" buffer re-loading
+" Triger `autoread` when files changes on disk
+" https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
+" https://vi.stackexchange.com/questions/13692/prevent-focusgained-autocmd-running-in-command-line-editing-mode
+autocmd FocusGained,BufEnter,CursorHold,CursorHoldI *
+            \ if mode() !~ '\v(c|r.?|!|t)' && getcmdwintype() == '' | checktime | endif
+
+" Notification after file change
+" https://vi.stackexchange.com/questions/13091/autocmd-event-for-autoread
+autocmd FileChangedShellPost *
+  \ echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
 
 
 " LEADER <leader>
@@ -21,7 +35,8 @@ au FileType go nmap <S-F3> :GoDeclsDir<cr>
 noremap <F7> :SyntasticCheck<cr>:Errors<cr>
 noremap <S-F7> :lclose<cr>
 noremap <F8> :TagbarToggle<cr>
-
+"map <leader>] gd
+noremap <leader>g gd
 nmap <silent> <Leader>f <Plug>(CommandT)
 nmap <silent> <Leader>t <Plug>(CommandTTag)
 
@@ -37,10 +52,9 @@ noremap <S-F10> "zyiw:stselect <C-R>z<cr>
 "noremap <F10> "zyiw:tselect <C-R>z<cr>
 
 noremap <leader>l :set scrolloff=999<cr>
-noremap <leader>L :set scrolloff=0<cr>
+noremap <leader>nl :set scrolloff=0<cr>
 noremap <leader>s :set spell<cr>
-noremap <leader>S :set nospell<cr>
-noremap <leader>g :GitGutterLineHighlightsToggle<cr>
+noremap <leader>ns :set nospell<cr>
 " Toggle line numbers with <leader>nn, makes copying cleaner
 noremap <leader>nn :set nonumber!<CR>:set foldcolumn=0<CR>
 " Don't use Ex mode, use Q for formatting
@@ -100,6 +114,8 @@ Plug 'vim-syntastic/syntastic'
 Plug 'alfredodeza/pytest.vim'
 " Building things
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+" https://octetz.com/docs/2019/2019-04-24-vim-as-a-go-ide/
+Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neomake/neomake'
 
 "----------------------------------------
@@ -109,8 +125,8 @@ Plug 'tpope/vim-surround'
 " Completions
 "Plug 'Valloric/YouCompleteMe'
 if has ('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  Plug 'stamblerre/gocode', { 'rtp': 'nvim', 'do': '~/.config/nvim/plugged/gocode/nvim/symlink.sh' }
+  " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+  " Plug 'stamblerre/gocode', { 'rtp': 'nvim', 'do': '~/.config/nvim/plugged/gocode/nvim/symlink.sh' }
 else
   Plug 'Shougo/deoplete.nvim'
   Plug 'roxma/nvim-yarp'
@@ -186,8 +202,6 @@ endfunction
 
 " Locate a bin directory suitable for GOBIN by searching (first) for go.mod
 function! FindGoBin()
-
-    return expand("~/jitsuin/avid/src/bin")
 
     " Prioritize go.mod found above the first file opened.
     let gomod = FindFileUp(getcwd() . "/", "go.mod", getcwd() . "/" . expand("%:h"))
@@ -503,28 +517,15 @@ let g:ale_set_quickfix = 0
 let g:ale_linters = {'go':['gofmt', 'golangci-lint'], 'python':['pylint']}
 
 let g:ale_lint_on_text_changed = 0
-let g:context_derived_golangci_yml = Find_golangci_lint_config()
+let g:context_derived_golangci_yml = "~/.golangci.yml"
 
 "let g:ale_go_golangci_lint_options = "--enable-all"
-if filereadable(g:context_derived_golangci_yml)
-    let g:ale_go_golangci_lint_options = "--enable-all -c " . g:context_derived_golangci_yml
-endif
+let g:ale_go_golangci_lint_options = "--enable-all -c ~/.golangci.yml"
 
 let g:ale_python_autopep8_options = "--max-line-length=150 --ignore E402"
 let g:ale_python_flake8_options = "--max-line-length=150 --ignore E402"
 
-let g:ale_python_pylint_executable = 'python3'   " or 'python' for Python 2
-"let g:ale_python_pylint_options = '--rcfile /path/to/pylint.rc'
-" The virtualenv detection needs to be disabled.
-let g:ale_python_pylint_use_global = 0
-
- 
-" Prefer the context derived gobin directory
-if filereadable(g:context_derived_gobin . "/golangci-lint")
-    let g:ale_go_golangci_lint_executable = join([
-        \ g:context_derived_gobin, 'golangci-lint'], '/')
-endif
-" Otherwise, rely on usual GOPATH/GOBIN
+" let g:ale_go_golangci_lint_executable = 
 
 " Error and warning signs.
 let g:ale_sign_error = '⤫'
@@ -537,18 +538,80 @@ let g:airline#extensions#ale#enabled = 1
 "
 " go golang Go
 "
-"let g:go_debug=["lsp", "shell-commands"]
+" coc.nvim settings for go see https://octetz.com/docs/2019/2019-04-24-vim-as-a-go-ide/
+" if hidden is not set, TextEdit might fail.
+set hidden
+" Better display for messages
+set cmdheight=2
+" Smaller updatetime for CursorHold & CursorHoldI
+set updatetime=800
+" don't give |ins-completion-menu| messages.
+set shortmess+=c
+" always show signcolumns
+set signcolumn=yes
 
-" guru (the default) is rediculously slow
-"let g:go_def_mode = 'godef'
-"let g:go_info_mode = 'gopls'
-"let g:go_auto_sameids = 0
-"let g:go_auto_sameids = 1
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use `[c` and `]c` to navigate diagnostics
+nmap <silent> [c <Plug>(coc-diagnostic-prev)
+nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use U to show documentation in preview window
+nnoremap <silent> U :call <SID>show_documentation()<CR>
+
+" Remap for rename current word
+nmap <leader>rn <Plug>(coc-rename)
+
+" Remap for format selected region
+vmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+" Show all diagnostics
+nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions
+nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" Show commands
+nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document
+nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols
+nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list
+nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+
+" disable vim-go :GoDef short cut (gd)
+" this is handled by LanguageClient [LC]
+let g:go_def_mapping_enabled = 0
+let g:go_auto_type_info = 1
+let g:go_def_mode = 'gopls'
+let g:go_info_mode = 'gopls'
+" let g:go_auto_sameids = 0
 "
-" This puts a wrapper script for the go binary at the front of the path. The
-" wrapper arranges for 'go' to execute in a container
-"let $PATH='~/jitsuin/robinbryce/workflow/vimgo:' . $PATH
-"let g:go_bin_path = g:context_derived_gobin
+" let g:go_bin_path = 
 let g:go_highlight_build_constraints = 1
 let g:go_highlight_extra_types = 1
 let g:go_highlight_fields = 1
@@ -572,7 +635,7 @@ let g:delve_backend = "native"
 
 if version >= 703
     highlight ColorColumn ctermbg=darkgrey
-    set colorcolumn=80
+    set colorcolumn=100
 endif
 
 "if version >= 703
